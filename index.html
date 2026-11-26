@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="auth">
+  <div class="bg"></div><div class="ridge"></div><div class="corner"></div>
+  <div class="brand-top" id="brand">
+    <img src="assets/logo-color.png" alt="RMO – Ridgeline Mountain Outfitters" onerror="this.replaceWith(Object.assign(document.createElement('div'),{innerHTML:'<div class=wm>RMO</div><div class=sub>RIDGELINE MOUNTAIN OUTFITTERS</div>'}))">
+  </div>
+
+  <form class="auth-card" id="login" novalidate>
+    <h1>Training and learning and development</h1>
+    <label class="field" id="f-user"><input id="user" type="text" placeholder="Enter username" autocomplete="username"></label>
+    <label class="field" id="f-pass"><input id="pass" type="password" placeholder="Enter Password" autocomplete="current-password"></label>
+    <div class="msg-error" id="err" role="alert"></div>
+    <a class="link" href="forgot.html">Forgot password?</a>
+    <button class="btn-login" type="submit">Login</button>
+  </form>
+
+    <div class="demo">Prototype: any username + password works (opens the Employee dashboard).<br>Try <b>trainer</b>, <b>ladmin</b>, <b>manager</b> or <b>management</b> to start as another role.</div>
+
+  <div class="auth-foot"><p>© 2026 RMO. All rights reserved.</p><div><span>Privacy</span><span>Terms</span><span>Help</span></div></div>
+</div>
+<script>
+const form=document.getElementById('login'),err=document.getElementById('err');
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+  const u=user.value.trim(),p=pass.value;
+  document.getElementById('f-user').classList.toggle('error',!u);
+  document.getElementById('f-pass').classList.toggle('error',!p);
+  if(!u||!p){err.textContent='Enter your username and password.';err.classList.add('show');return}
+  const map={trainer:'trainer',ladmin:'ld',admin:'ld',manager:'manager',management:'management'};
+  try{sessionStorage.setItem('tms.user',u);sessionStorage.setItem('tms.role',map[u.toLowerCase()]||'employee')}catch(_){}
+  location.href='dashboard.html';
+});
+</script>
+</body>
+</html>

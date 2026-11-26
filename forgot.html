@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Forgot password</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="auth">
+  <div class="bg"></div><div class="ridge"></div><div class="corner"></div>
+  <div class="brand-top"><img src="assets/logo-color.png" alt="RMO" onerror="this.replaceWith(Object.assign(document.createElement('div'),{innerHTML:'<div class=wm>RMO</div><div class=sub>RIDGELINE MOUNTAIN OUTFITTERS</div>'}))"></div>
+
+  <div class="auth-card wide w1" id="card">
+    <!-- Step 1: request -->
+    <section class="step active" id="s1">
+      <h2>Forgot Password</h2><p>Step 1 of 2: Request a reset link</p>
+      <p>Enter your username or email to request a password reset link.</p>
+      <label for="id">Username or Email</label>
+      <div class="field"><input id="id" placeholder="Enter username or Email"></div>
+      <button class="pill primary" data-go="s2" data-need="id">Submit Reset Request</button>
+      <a href="index.html"><button class="pill sand" type="button">Back to Login</button></a>
+    </section>
+    <!-- Generic confirmation (never reveals whether the account exists) -->
+    <section class="step" id="s2">
+      <h2>Forgot Password</h2><p>Step 1 of 2: Request a reset link</p>
+      <div class="box">If an account matches the details you entered, a reset link has been sent. Please check your email and follow the link to continue.</div>
+      <button class="pill sand" data-go="s3">Back to Login</button>
+      <p style="font-size:13px;opacity:.8;margin:-4px 0 0">Prototype: this button simulates opening the emailed link (step 2).</p>
+    </section>
+    <!-- Step 2 -->
+    <section class="step" id="s3">
+      <h2>Reset Password</h2><p>Step 2 of 2: Choose a new password</p>
+      <p>You reached this page from the reset link.</p>
+      <div class="box dashed"><b>Password policy</b>• At least 8 characters; uppercase, lowercase and a digit<br>• Not your username; not one of your last 3 passwords</div>
+      <label for="np">New Password</label><div class="field"><input id="np" type="password" placeholder="New password"></div>
+      <label for="cp">Confirm New Password</label><div class="field"><input id="cp" type="password" placeholder="Confirm new password"></div>
+      <div class="msg-error" id="err"></div>
+      <button class="pill primary" id="reset">Reset Password</button>
+    </section>
+    <!-- Done -->
+    <section class="step" id="s4">
+      <h2>Password Reset</h2>
+      <div class="box">Your password has been reset. You can now log in with your new password.</div>
+      <a href="index.html"><button class="pill primary" type="button">Go to Login</button></a>
+    </section>
+  </div>
+  <div class="auth-foot"><p>© 2026 RMO. All rights reserved.</p><div><span>Privacy</span><span>Terms</span><span>Help</span></div></div>
+</div>
+<script>
+const show=id=>{document.querySelectorAll('.step').forEach(s=>s.classList.toggle('active',s.id===id));document.getElementById('card').className='auth-card wide w'+id.slice(1)};
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{
+  const need=b.dataset.need; if(need&&!document.getElementById(need).value.trim()){document.getElementById(need).focus();return}
+  show(b.dataset.go)}));
+document.getElementById('reset').addEventListener('click',()=>{
+  const p=np.value,c=cp.value,e=document.getElementById('err');let m='';
+  if(p.length<8||!/[A-Z]/.test(p)||!/[a-z]/.test(p)||!/\d/.test(p))m='Password does not meet the policy above.';
+  else if(p!==c)m='Passwords do not match.';
+  e.textContent=m;e.classList.toggle('show',!!m);if(!m)show('s4');
+});
+</script>
+</body>
+</html>

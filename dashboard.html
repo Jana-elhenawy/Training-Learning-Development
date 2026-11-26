@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <div class="crumb">Workspace / Dashboard</div>
+      <label class="role-switch">Account type
+        <select id="role" aria-label="Account type"></select>
+      </label>
+      <div class="search">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input placeholder="Search.">
+      </div>
+      <button class="icon-btn" aria-label="Notifications"><svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg><i class="dot"></i></button>
+      <button class="icon-btn" aria-label="Profile"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></button>
+    </header>
+    <main id="main"></main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== Data per account type (copy + numbers from the Figma "Dashboards" section) ===== */
+const B=(t,c)=>`<span class="badge b-${c}">${t}</span>`;
+const NOTE_BTN='View all notifications';
+const SESS=[['Financial Reporting Basics','12/11/2026'],['Excel for Analysts','19/11/2026'],['Workplace Safety','26/11/2026']];
+
+const ROLES={
+ employee:{label:'Employee',welcome:'Welcome, Amira',sub:'Employee home',badges:[['Personal view','info'],['Own enrollments only','neutral']],
+  nav:['Dashboard','Program Catalog','My Training','Notification'],
+  shortcuts:['Browse Program Catalog','Notification','My Training'],
+  blocks:[
+   {t:'kpis',title:'My Enrollments',tag:'Summary',cols:3,items:[['Pending','2','requests'],['Approved','4','enrollments'],['Waitlisted','1','request']]},
+   {t:'row',parts:[
+     {t:'table',title:'Upcoming Sessions',meta:'Showing 1–3 of 3',head:['Program','Date','Location','Status'],
+      rows:[[SESS[0][0],SESS[0][1],'Room B-204',B('Approved','success')],[SESS[1][0],SESS[1][1],'Online',B('Pending','warning')],[SESS[2][0],SESS[2][1],'Room A-101',B('Waitlisted','info')]],grow:2},
+     {t:'notes',unread:2,items:[['Approved','success','Your enrollment in Financial Reporting Basics was approved','Today · 09:12'],['Reminder','info','Excel for Analysts starts in 15 days','Yesterday · 16:40']]}]}]},
+ trainer:{label:'Trainer',welcome:'Welcome, Dr. Khaled',sub:'Trainer home',badges:[['Trainer view','info'],['Assigned sessions only','neutral']],
+  nav:['Dashboard','Program Catalog','My Training','My Sessions','Notification'],
+  shortcuts:['My Sessions','Notification','Program Catalog'],
+  blocks:[
+   {t:'kpis',title:'Pending Items',tag:'Needs action',cols:2,items:[['Sessions to record','3','attendance'],['Sessions to finalize','2','results']]},
+   {t:'row',parts:[
+     {t:'table',title:'Upcoming Sessions',meta:'Showing 1–3 of 3',head:['Program','Date','Participants','Status','Action'],
+      rows:[[SESS[0][0],SESS[0][1],'12',B('In progress','warning'),'open'],[SESS[1][0],SESS[1][1],'8',B('Open','info'),'open'],[SESS[2][0],SESS[2][1],'15',B('Open','info'),'open']],grow:2},
+     {t:'notes',unread:2,items:[['Assigned','info','You were assigned to Excel for Analysts','Today · 08:30'],['Action','warning','Attendance for Financial Reporting Basics needs recording','Yesterday · 17:05']]}]}]},
+ ld:{label:'L&D Administrator',welcome:'Welcome, Hossam',sub:'L&D Administrator home',badges:[['Full access','info'],['L&D Administrator','neutral']],
+  nav:['Dashboard','Users','Program Catalog','Sessions','Enrollment Requests','Direct Enrollment','Results','Employee History','Reports','Audit and Security Log','System Settings','Notification'],
+  shortcuts:['Enrollment Requests','Create Session','Create User','Direct Enrollment','Reports'],
+  blocks:[
+   {t:'kpis',title:'Pending Items',tag:'Needs action',cols:4,items:[['Pending requests','7'],['Pending over 3 days','2'],['Sessions needing a trainer','3'],['Locked accounts','1']]},
+   {t:'row',parts:[
+     {t:'list',title:'Sessions needing attention',items:[['No trainer','danger','Excel for Analysts · 19/11/2026','Needs a trainer'],['Low seats','warning','Workplace Safety · 26/11/2026','3 seats left']]},
+     {t:'list',title:'Pending Enrollment Requests',items:[['Pending','warning','Omar Farouk · Excel for Analysts','Requested today'],['> 3 days','danger','Karim Adel · Workplace Safety','Pending 4 days']]},
+     {t:'notes',unread:2,items:[['Info','info','Nour El-Din was enrolled directly in Workplace Safety','Today · 09:12'],['Locked','warning','1 account is locked after failed sign-ins','Yesterday · 16:40']]}]}]},
+ manager:{label:'Department Manager',welcome:'Welcome, Mariam',sub:'Finance department · Department Manager home',badges:[['No assessment scores shown','info'],['Own department only','neutral']],
+  nav:['Dashboard','Team dashboard','Department employees','Employee records','Department reports','Attendance','Training suggestions','Program catalog','Notifications'],
+  shortcuts:['Open team dashboard','Training suggestions','Program catalog','Notifications'],
+  blocks:[
+   {t:'kpis',title:'KPI Summary',tag:'Summary only',tagc:'info',cols:3,items:[['Enrollments','24','this period'],['Approval rate','88%','department total'],['Completion rate','78%','department total'],['Attendance rate','91%','department total'],['Seat usage','84%','department total'],['Cancellations','3','this period']]},
+   {t:'row',parts:[{t:'period'},
+     {t:'notes',unread:2,items:[['Pending','warning','Nomination for Omar Farouk is awaiting L&D review','Today · 09:12'],['Info','info','Mandatory training deadline in 5 days for 3 employees','Yesterday · 16:40']]}]}]},
+ management:{label:'Management',welcome:'Welcome, Nadia',sub:'Management home',badges:[['Summary only','info'],['All departments','neutral']],
+  nav:['Dashboard','Reports','Notification'],
+  shortcuts:['Open Reports','Notification','Export Report'],
+  blocks:[
+   {t:'kpis',title:'KPI Summary',tag:'Summary only',cols:3,items:[['Enrollments','312','this period'],['Approval rate','86%','all departments'],['Completion rate','74%','all departments'],['Attendance rate','89%','all departments'],['Seat utilization','81%','all departments'],['Cancellations','14','this period']]},
+   {t:'row',parts:[{t:'period'},
+     {t:'notes',unread:2,items:[['Report','warning','Monthly training report is ready to export','Today · 09:00'],['Info','info','Seat utilization crossed 80% this month','Yesterday · 14:20']]}]}]}
+};
+
+/* ===== Rendering ===== */
+const $=s=>document.querySelector(s), esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const item=([b,c,t,s])=>`<div class="item">${B(b,c)}<div class="t"><b>${esc(t)}</b><span>${s}</span></div></div>`;
+const render={
+ kpis:b=>`<section class="card"><div class="card-h"><h2>${b.title}</h2>${B(b.tag,b.tagc||'neutral')}</div>
+   <div class="kpis" style="grid-template-columns:repeat(${b.cols},1fr)">${b.items.map(k=>`<div class="kpi"><span class="l">${k[0]}</span><span class="v">${k[1]}</span>${k[2]?`<span class="s">${k[2]}</span>`:''}</div>`).join('')}</div></section>`,
+ table:b=>`<section class="card tcard" style="flex:${b.grow||1} 1 420px"><div class="card-h"><h2>${b.title}</h2><span class="badge" style="color:var(--text-2)">${b.meta}</span></div>
+   <table><thead><tr>${b.head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${b.rows.map(r=>`<tr>${r.map(c=>c==='open'?`<td><button class="btn outline" data-toast="Session opened (screen not built yet)">open</button></td>`:`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></section>`,
+ notes:b=>`<section class="card grow"><div class="card-h"><h2>Recent Notification</h2>${B(b.unread+' unread','danger')}</div>${b.items.map(item).join('')}<button class="btn self" data-toast="Notifications screen not built yet">${NOTE_BTN}</button></section>`,
+ list:b=>`<section class="card grow"><div class="card-h"><h2>${b.title}</h2></div>${b.items.map(item).join('')}</section>`,
+ period:()=>`<section class="card" style="flex:0 1 420px"><h2 style="font:600 20px/28px Inter">Period Filter</h2><div class="field-sel"><label>Period</label><select><option>Last 12 months</option><option>Last 6 months</option><option>Last 30 days</option></select></div><div class="actions"><button class="btn" data-toast="Period reset">Reset</button><button class="btn primary" data-toast="Period applied">Apply period</button></div></section>`
+};
+const block=b=>b.t==='row'?`<div class="row">${b.parts.map(p=>render[p.t](p)).join('')}</div>`:render[b.t](b);
+
+const logo=`<div class="logo"><img src="assets/logo-white.png" alt="RMO" onerror="this.parentNode.innerHTML='<div><div class=wm>RMO</div><small>RIDGELINE MOUNTAIN OUTFITTERS</small></div>'"></div>`;
+
+function show(key){
+  const r=ROLES[key]; if(!r) return;
+  try{sessionStorage.setItem('tms.role',key)}catch(_){}
+  $('#role').value=key;
+  $('#sidebar').innerHTML=logo+`<div class="role">${esc(r.label)}</div><div style="height:0"></div>`+
+    r.nav.map((n,i)=>`<button class="nav${i?'':' active'}" data-toast="${esc(n)} screen – to be built by the team">${esc(n)}</button>`).join('')+
+    `<div class="spacer"></div><button class="nav muted" data-href="change-password.html">Change password</button><button class="nav muted" id="logout">Log out</button>`;
+  $('#main').innerHTML=`<div class="head"><div><h1>${esc(r.welcome)}</h1><p>${esc(r.sub)}</p></div><div class="badges">${r.badges.map(b=>B(b[0],b[1])).join('')}</div></div>
+    <section class="card"><h2 style="font:600 20px/28px Inter">Shortcuts</h2><div class="shortcuts">${r.shortcuts.map((s,i)=>`<button class="btn${i?'':' primary'}" data-toast="${esc(s)} screen – to be built">${esc(s)}</button>`).join('')}</div></section>`+
+    r.blocks.map(block).join('');
+  document.title='TMS – '+r.label+' dashboard';
+}
+
+$('#role').innerHTML=Object.entries(ROLES).map(([k,r])=>`<option value="${k}">${esc(r.label)}</option>`).join('');
+$('#role').addEventListener('change',e=>show(e.target.value));
+
+let tt; document.addEventListener('click',e=>{
+  const h=e.target.closest('[data-href]');if(h&&h.dataset.href){location.href=h.dataset.href;return}
+  if(e.target.id==='logout'){try{sessionStorage.clear()}catch(_){}location.href='index.html';return}
+  const t=e.target.closest('[data-toast]'); if(!t) return;
+  const el=$('#toast'); el.textContent=t.dataset.toast; el.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('show'),1800);
+});
+
+let start='employee'; try{start=sessionStorage.getItem('tms.role')||'employee'}catch(_){}
+show(ROLES[start]?start:'employee');
+</script>
+</body>
+</html>
