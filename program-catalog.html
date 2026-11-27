@@ -1,66 +1,78 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>TMS – Program Catalog</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 <style>
-.nav{text-decoration:none} .page-actions{display:flex;gap:10px;flex-wrap:wrap}
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 14px}
+.nav{text-decoration:none}.page-actions,.toolbar{display:flex;gap:10px;flex-wrap:wrap}.toolbar{margin:4px 0 14px}
 .control{min-width:190px;height:38px;padding:0 12px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);font:500 14px Inter}
-.table-wrap{width:100%;overflow-x:auto} table{min-width:760px} td{font-size:14px}
-.notice{padding:14px 16px;background:var(--warning-bg);color:var(--warning);border:1px solid var(--border);border-radius:8px;font-size:14px;line-height:1.5}
-.form-field{display:flex;flex-direction:column;gap:7px;margin:8px 0 16px;font-size:14px;color:var(--text-2)}
-.form-field .control{width:100%;height:44px} .setting-row{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 0;border-bottom:1px solid var(--border-subtle)}
-.setting-row div{display:flex;flex-direction:column;gap:5px} .setting-row span{font-size:13px;color:var(--text-muted)}
-@media(max-width:900px){.page-actions{width:100%}.page-actions .btn{flex:1}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
-</style>
-</head>
-<body>
-<div class="app">
-<aside class="sidebar" id="sidebar">
-<div class="logo"><img src="assets/logo-white.png" alt="RMO"></div>
-<div class="role">L&amp;D Administrator</div>
-<a class="nav" href="dashboard.html">Dashboard</a><a class="nav" href="users.html">Users</a><a class="nav active" href="program-catalog.html">Program Catalog</a><a class="nav" href="sessions.html">Sessions</a><a class="nav" href="enrollment-requests.html">Enrollment Requests</a><a class="nav" href="direct-enrollment.html">Direct Enrollment</a><a class="nav" href="results.html">Results</a><a class="nav" href="employee-history.html">Employee History</a><a class="nav" href="reports.html">Reports</a><a class="nav" href="audit-security-log.html">Audit and Security Log</a><a class="nav" href="system-settings.html">System Settings</a><a class="nav" href="notification.html">Notification</a><a class="nav" href="approvals.html">Approvals</a><a class="nav" href="training-plan.html">Training plan</a><a class="nav" href="access-hr-review.html">Access and HR review</a>
-<div class="spacer"></div>
-<a class="nav muted" href="change-password.html">Change password</a>
-<a class="nav muted" href="index.html" id="logout">Log out</a>
-</aside>
-<div class="main-wrap">
-<header class="topbar">
-<div class="crumb">Workspace / Program Catalog</div>
-<div class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="global-search" placeholder="Search."></div>
-<button class="icon-btn" aria-label="Notifications" onclick="location.href='notification.html'"><svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></button>
-<button class="icon-btn" aria-label="Profile" onclick="location.href='users.html'"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></button>
-</header>
-<main>
-<div class="head"><div><h1>Program Catalog</h1><p>Create and manage training programs available across the organization.</p></div><div class="badges"><span class="badge b-info">Full access</span><span class="badge b-neutral">L&amp;D Administrator</span></div></div>
-<div class="page-actions"><button class="btn primary" type="button" data-action="Create Program">Create Program</button><button class="btn " type="button" data-action="Export Catalog">Export Catalog</button></div>
-<section class="card"><div class="card-h"><h2>Program Catalog list</h2><span class="badge b-neutral">4 records</span></div><div class="toolbar"><select class="control"><option>All categories</option><option>All</option><option>Pending</option><option>Active</option><option>Completed</option></select><select class="control"><option>All statuses</option><option>All</option><option>Pending</option><option>Active</option><option>Completed</option></select></div><div class="table-wrap"><table><thead><tr><th>Program</th><th>Category</th><th>Delivery method</th><th>Duration</th><th>Capacity</th><th>Status</th><th>Action</th></tr></thead><tbody><tr><td>Excel for Analysts</td><td>Technical</td><td>Classroom</td><td>2 days</td><td>20</td><td>Published</td><td><button class="btn outline row-action" type="button">View</button></td></tr><tr><td>Workplace Safety</td><td>Compliance</td><td>Classroom</td><td>1 day</td><td>30</td><td>Published</td><td><button class="btn outline row-action" type="button">View</button></td></tr><tr><td>Financial Reporting Basics</td><td>Finance</td><td>Online</td><td>3 weeks</td><td>40</td><td>Published</td><td><button class="btn outline row-action" type="button">View</button></td></tr><tr><td>Leadership Essentials</td><td>Management</td><td>Blended</td><td>4 weeks</td><td>18</td><td>Draft</td><td><button class="btn outline row-action" type="button">View</button></td></tr></tbody></table></div></section>
-</main></div></div>
-<div class="toast" id="toast"></div>
+.table-wrap{width:100%;overflow-x:auto}table{min-width:760px}td{font-size:14px}
+@media(max-width:900px){.page-actions{width:100%}.page-actions .btn{flex:1}}
+</style></head><body><div class="app"><aside class="sidebar" id="sidebar"></aside><div class="main-wrap">
+<header class="topbar"><div class="crumb" id="crumb">Workspace / Program Catalog</div>
+<div class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="global-search" placeholder="Search programs."></div>
+<button class="icon-btn" aria-label="Notifications" onclick="location.href='notification.html'"><svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></button></header>
+<main><div class="head"><div><h1 id="title">Program Catalog</h1><p id="subtitle"></p></div><div class="badges" id="badges"></div></div>
+<div class="page-actions" id="actions"></div>
+<section class="card"><div class="card-h"><h2 id="list-title">Available Programs</h2><span class="badge b-neutral" id="count"></span></div>
+<div class="toolbar"><select class="control" id="category"><option value="all">All categories</option><option>Technical</option><option>Compliance</option><option>Finance</option><option>Management</option></select>
+<select class="control" id="status"><option value="all">All statuses</option><option>Published</option><option>Draft</option></select></div>
+<div class="table-wrap"><table><thead id="thead"></thead><tbody id="rows"></tbody></table></div></section></main></div></div><div class="toast" id="toast"></div>
 <script>
-document.addEventListener('click', function(e){
- const b=e.target.closest('[data-action],.row-action');
- if(!b)return;
- const toast=document.getElementById('toast');
- toast.textContent=(b.dataset.action||b.textContent.trim())+' selected';
- toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),1800);
-});
-const search=document.querySelector('.table-search');
-if(search) search.addEventListener('input',()=>{
- document.querySelectorAll('tbody tr').forEach(row=>row.style.display=row.innerText.toLowerCase().includes(search.value.toLowerCase())?'':'none');
-});
-const globalSearch=document.getElementById('global-search');
-if(globalSearch) globalSearch.addEventListener('keydown',e=>{
- if(e.key==='Enter'){
-  const q=globalSearch.value.toLowerCase();
-  document.querySelectorAll('tbody tr').forEach(row=>row.style.display=row.innerText.toLowerCase().includes(q)?'':'none');
+const role = (()=>{try{return sessionStorage.getItem('tms.role')||'employee'}catch(e){return 'employee'}})();
+const roleNames={employee:'Employee',trainer:'Trainer',ld:'L&D Administrator',manager:'Department Manager',management:'Management'};
+const navs={
+ employee:['Dashboard','Program Catalog','My Training','Notification'],
+ trainer:['Dashboard','Program Catalog','My Training','My Sessions','Notification'],
+ ld:['Dashboard','Users','Program Catalog','Sessions','Enrollment Requests','Direct Enrollment','Results','Employee History','Reports','Audit and Security Log','System Settings','Notification','Approvals','Training plan','Access and HR review'],
+ manager:['Dashboard','Team dashboard','Department employees','Employee records','Department reports','Attendance','Training suggestions','Program catalog','Notifications'],
+ management:['Dashboard','Reports','Notification']
+};
+const hrefs={'Dashboard':'dashboard.html','Users':'users.html','Program Catalog':'program-catalog.html','Program catalog':'program-catalog.html','Sessions':'sessions.html','Enrollment Requests':'enrollment-requests.html','Direct Enrollment':'direct-enrollment.html','Results':'results.html','Employee History':'employee-history.html','Reports':'reports.html','Department reports':'reports.html','Audit and Security Log':'audit-security-log.html','System Settings':'system-settings.html','Notification':'notification.html','Notifications':'notification.html','Approvals':'approvals.html','Training plan':'training-plan.html','Access and HR review':'access-hr-review.html','My Training':'#','My Sessions':'#','Team dashboard':'#','Department employees':'#','Employee records':'#','Attendance':'#','Training suggestions':'#'};
+function buildSidebar(active){
+ const r=roleNames[role]||roleNames.employee;
+ document.getElementById('sidebar').innerHTML=`<div class="logo"><img src="assets/logo-white.png" alt="RMO" onerror="this.parentNode.innerHTML='<div><div class=wm>RMO</div><small>RIDGELINE MOUNTAIN OUTFITTERS</small></div>'"></div><div class="role">${r}</div>`+
+ (navs[role]||navs.employee).map(n=>`<a class="nav${n===active?' active':''}" href="${hrefs[n]||'#'}">${n}</a>`).join('')+
+ `<div class="spacer"></div><a class="nav muted" href="change-password.html">Change password</a><a class="nav muted" href="index.html" id="logout">Log out</a>`;
+ document.getElementById('logout').addEventListener('click',()=>{try{sessionStorage.clear()}catch(e){}});
+}
+function toast(message){const t=document.getElementById('toast');t.textContent=message;t.classList.add('show');clearTimeout(window._toastTimer);window._toastTimer=setTimeout(()=>t.classList.remove('show'),1800)}
+
+const configs={
+ employee:{active:'Program Catalog',title:'Browse Training Programs',sub:'Explore available programs and review their details before requesting enrollment.',badges:['Employee view','Available programs only'],list:'Available Programs',columns:['Program','Category','Delivery method','Duration','Available seats','Status','Action'],rows:[
+ ['Excel for Analysts','Technical','Classroom','2 days','8','Published','View'],
+ ['Workplace Safety','Compliance','Classroom','1 day','12','Published','View'],
+ ['Financial Reporting Basics','Finance','Online','3 weeks','15','Published','View']]},
+ trainer:{active:'Program Catalog',title:'Program Catalog',sub:'Review programs related to your assigned training sessions.',badges:['Trainer view','Program information'],list:'Programs',columns:['Program','Category','Delivery method','Duration','Capacity','Status','Action'],rows:[
+ ['Excel for Analysts','Technical','Classroom','2 days','20','Published','View'],
+ ['Financial Reporting Basics','Finance','Online','3 weeks','40','Published','View'],
+ ['Workplace Safety','Compliance','Classroom','1 day','30','Published','View']]},
+ manager:{active:'Program catalog',title:'Program Catalog',sub:'Browse training programs relevant to your department and team development.',badges:['Department Manager','Department view'],list:'Training Programs',columns:['Program','Category','Delivery method','Duration','Status','Action'],rows:[
+ ['Excel for Analysts','Technical','Classroom','2 days','Published','View'],
+ ['Workplace Safety','Compliance','Classroom','1 day','Published','View'],
+ ['Leadership Essentials','Management','Blended','4 weeks','Published','View']]},
+ ld:{active:'Program Catalog',title:'Program Catalog',sub:'Create and manage training programs available across the organization.',badges:['Full access','L&D Administrator'],list:'Program Catalog list',columns:['Program','Category','Delivery method','Duration','Capacity','Status','Action'],rows:[
+ ['Excel for Analysts','Technical','Classroom','2 days','20','Published','View'],
+ ['Workplace Safety','Compliance','Classroom','1 day','30','Published','View'],
+ ['Financial Reporting Basics','Finance','Online','3 weeks','40','Published','View'],
+ ['Leadership Essentials','Management','Blended','4 weeks','18','Draft','View']]}
+};
+if(!configs[role]){location.replace('dashboard.html')}else{
+ const c=configs[role];buildSidebar(c.active);document.title='TMS – '+c.title;
+ document.getElementById('title').textContent=c.title;document.getElementById('subtitle').textContent=c.sub;
+ document.getElementById('crumb').textContent='Workspace / '+c.title;
+ document.getElementById('badges').innerHTML=c.badges.map((x,i)=>`<span class="badge ${i?'b-neutral':'b-info'}">${x}</span>`).join('');
+ document.getElementById('list-title').textContent=c.list;
+ document.getElementById('thead').innerHTML='<tr>'+c.columns.map(x=>`<th>${x}</th>`).join('')+'</tr>';
+ document.getElementById('count').textContent=c.rows.length+' records';
+ if(role==='ld')document.getElementById('actions').innerHTML='<button class="btn primary" data-action="Create Program">Create Program</button><button class="btn" data-action="Export Catalog">Export Catalog</button>';
+ if(role==='employee')document.getElementById('actions').innerHTML='<span class="badge b-info">Select a program to view enrollment details.</span>';
+ function render(){const cat=document.getElementById('category').value,st=document.getElementById('status').value,q=document.getElementById('global-search').value.toLowerCase();
+ const rows=c.rows.filter(r=>(cat==='all'||r[1]===cat)&&(st==='all'||r.includes(st))&&r.join(' ').toLowerCase().includes(q));
+ document.getElementById('count').textContent=rows.length+' records';
+ document.getElementById('rows').innerHTML=rows.length?rows.map((r,i)=>'<tr>'+r.slice(0,-1).map((v,j)=>`<td>${v}</td>`).join('')+`<td><button class="btn outline row-action" data-name="${r[0]}">${role==='employee'?'View / Enroll':'View'}</button></td></tr>`).join(''):'<tr><td colspan="'+c.columns.length+'" style="padding:24px;text-align:center">No programs match your filters.</td></tr>';
  }
-});
-const form=document.getElementById('main-form');
-if(form) form.addEventListener('submit',e=>{e.preventDefault();const t=document.getElementById('toast');t.textContent='Enrollment submitted (prototype)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);});
-</script>
-</body>
-</html>
+ render();['category','status','global-search'].forEach(id=>document.getElementById(id).addEventListener(id==='global-search'?'input':'change',render));
+ document.addEventListener('click',e=>{const b=e.target.closest('[data-action],[data-name]');if(!b)return;toast(b.dataset.action?b.dataset.action+' selected':(role==='employee'?'Program details opened':'Program selected')+' (prototype)')});
+}
+</script></body></html>
