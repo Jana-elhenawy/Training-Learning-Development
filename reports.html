@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Reports</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css"><style>
+.nav{text-decoration:none}.page-actions,.toolbar{display:flex;gap:10px;flex-wrap:wrap}.toolbar{margin:4px 0 14px}
+.table-wrap{width:100%;overflow-x:auto}table{min-width:700px}td{font-size:14px}
+@media(max-width:900px){.page-actions{width:100%}.page-actions .btn{flex:1}}
+</style></head><body><div class="app"><aside class="sidebar" id="sidebar"></aside><div class="main-wrap">
+<header class="topbar"><div class="crumb" id="crumb">Workspace / Reports</div><div class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="global-search" placeholder="Search reports."></div>
+<button class="icon-btn" aria-label="Notifications" onclick="location.href='notification.html'"><svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></button></header>
+<main><div class="head"><div><h1 id="title">Reports</h1><p id="subtitle"></p></div><div class="badges" id="badges"></div></div><div class="page-actions" id="actions"></div>
+<section class="card"><div class="kpis" id="kpis"></div></section>
+<section class="card"><div class="card-h"><h2 id="list-title">Reports</h2><span class="badge b-neutral" id="count"></span></div>
+<div class="table-wrap"><table><thead><tr><th>Report</th><th>Period</th><th>Generated</th><th>Status</th><th>Action</th></tr></thead><tbody id="rows"></tbody></table></div></section></main></div></div><div class="toast" id="toast"></div>
+<script>
+const role = (()=>{try{return sessionStorage.getItem('tms.role')||'employee'}catch(e){return 'employee'}})();
+const roleNames={employee:'Employee',trainer:'Trainer',ld:'L&D Administrator',manager:'Department Manager',management:'Management'};
+const navs={
+ employee:['Dashboard','Program Catalog','My Training','Notification'],
+ trainer:['Dashboard','Program Catalog','My Training','My Sessions','Notification'],
+ ld:['Dashboard','Users','Program Catalog','Sessions','Enrollment Requests','Direct Enrollment','Results','Employee History','Reports','Audit and Security Log','System Settings','Notification','Approvals','Training plan','Access and HR review'],
+ manager:['Dashboard','Team dashboard','Department employees','Employee records','Department reports','Attendance','Training suggestions','Program catalog','Notifications'],
+ management:['Dashboard','Reports','Notification']
+};
+const hrefs={'Dashboard':'dashboard.html','Users':'users.html','Program Catalog':'program-catalog.html','Program catalog':'program-catalog.html','Sessions':'sessions.html','Enrollment Requests':'enrollment-requests.html','Direct Enrollment':'direct-enrollment.html','Results':'results.html','Employee History':'employee-history.html','Reports':'reports.html','Department reports':'reports.html','Audit and Security Log':'audit-security-log.html','System Settings':'system-settings.html','Notification':'notification.html','Notifications':'notification.html','Approvals':'approvals.html','Training plan':'training-plan.html','Access and HR review':'access-hr-review.html','My Training':'#','My Sessions':'#','Team dashboard':'#','Department employees':'#','Employee records':'#','Attendance':'#','Training suggestions':'#'};
+function buildSidebar(active){
+ const r=roleNames[role]||roleNames.employee;
+ document.getElementById('sidebar').innerHTML=`<div class="logo"><img src="assets/logo-white.png" alt="RMO" onerror="this.parentNode.innerHTML='<div><div class=wm>RMO</div><small>RIDGELINE MOUNTAIN OUTFITTERS</small></div>'"></div><div class="role">${r}</div>`+
+ (navs[role]||navs.employee).map(n=>`<a class="nav${n===active?' active':''}" href="${hrefs[n]||'#'}">${n}</a>`).join('')+
+ `<div class="spacer"></div><a class="nav muted" href="change-password.html">Change password</a><a class="nav muted" href="index.html" id="logout">Log out</a>`;
+ document.getElementById('logout').addEventListener('click',()=>{try{sessionStorage.clear()}catch(e){}});
+}
+function toast(message){const t=document.getElementById('toast');t.textContent=message;t.classList.add('show');clearTimeout(window._toastTimer);window._toastTimer=setTimeout(()=>t.classList.remove('show'),1800)}
+
+const configs={
+ manager:{active:'Department reports',title:'Department Reports',sub:'Review training performance summaries for your department only.',badges:['Department Manager','Summary only'],kpis:[['Enrollments','24'],['Approval rate','88%'],['Completion rate','78%'],['Attendance rate','91%']],rows:[
+ ['Department Training Summary','November 2026','Today, 09:00','Ready','View summary'],
+ ['Department Attendance Summary','October 2026','01 Nov 2026','Ready','View summary']]},
+ management:{active:'Reports',title:'Management Reports',sub:'Organization-wide training KPIs and high-level summaries. Detailed employee records and assessment scores are not shown.',badges:['Management','Summary only'],kpis:[['Total enrollments','312'],['Completion rate','74%'],['Attendance rate','89%'],['Seat utilization','81%']],rows:[
+ ['Monthly Training Summary','November 2026','Today, 09:00','Ready','View summary'],
+ ['Enrollment and Attendance','October 2026','01 Nov 2026','Ready','View summary'],
+ ['Program Effectiveness','Q3 2026','30 Oct 2026','Ready','View summary']]},
+ ld:{active:'Reports',title:'Reports',sub:'Monitor training activity and export operational reports.',badges:['Full access','L&D Administrator'],kpis:[['Total enrollments','312'],['Completion rate','74%'],['Attendance rate','89%'],['Seat utilization','81%']],rows:[
+ ['Monthly Training Summary','November 2026','Today, 09:00','Ready','Download'],
+ ['Enrollment and Attendance','October 2026','01 Nov 2026','Ready','Download'],
+ ['Program Effectiveness','Q3 2026','30 Oct 2026','Ready','Download']]}
+};
+if(!configs[role]){location.replace('dashboard.html')}else{
+ const c=configs[role];buildSidebar(c.active);document.title='TMS – '+c.title;
+ document.getElementById('title').textContent=c.title;document.getElementById('subtitle').textContent=c.sub;
+ document.getElementById('crumb').textContent='Workspace / '+c.title;
+ document.getElementById('badges').innerHTML=c.badges.map((x,i)=>`<span class="badge ${i?'b-neutral':'b-info'}">${x}</span>`).join('');
+ document.getElementById('kpis').style.gridTemplateColumns='repeat(4,minmax(0,1fr))';
+ document.getElementById('kpis').innerHTML=c.kpis.map(k=>`<div class="kpi"><span class="l">${k[0]}</span><span class="v">${k[1]}</span></div>`).join('');
+ document.getElementById('count').textContent=c.rows.length+' records';
+ if(role==='ld')document.getElementById('actions').innerHTML='<button class="btn primary" data-action="Generate Report">Generate Report</button><button class="btn" data-action="Export Report">Export Report</button>';
+ document.getElementById('rows').innerHTML=c.rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td><button class="btn outline row-action">${r[4]}</button></td></tr>`).join('');
+ document.getElementById('global-search').addEventListener('input',e=>document.querySelectorAll('#rows tr').forEach(tr=>tr.style.display=tr.innerText.toLowerCase().includes(e.target.value.toLowerCase())?'':'none'));
+ document.addEventListener('click',e=>{const b=e.target.closest('[data-action],.row-action');if(b)toast((b.dataset.action||b.textContent.trim())+' selected (prototype)')});
+}
+</script></body></html>
