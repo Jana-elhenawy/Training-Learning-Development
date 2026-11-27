@@ -32,7 +32,7 @@
 <div class="crumb">Workspace / Users</div>
 <div class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="global-search" placeholder="Search."></div>
 <button class="icon-btn" aria-label="Notifications" onclick="location.href='notification.html'"><svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></button>
-<button class="icon-btn" aria-label="Profile" onclick="location.href='users.html'"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></button>
+<button class="icon-btn" aria-label="Profile" onclick="location.href='change-password.html'"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></button>
 </header>
 <main>
 <div class="head"><div><h1>Users</h1><p>Manage employee, trainer, manager, and administrator accounts.</p></div><div class="badges"><span class="badge b-info">Full access</span><span class="badge b-neutral">L&amp;D Administrator</span></div></div>
@@ -40,27 +40,7 @@
 <section class="card"><div class="card-h"><h2>Users list</h2><span class="badge b-neutral">5 records</span></div><div class="toolbar"><select class="control"><option>All roles</option><option>All</option><option>Pending</option><option>Active</option><option>Completed</option></select><select class="control"><option>All account statuses</option><option>All</option><option>Pending</option><option>Active</option><option>Completed</option></select></div><div class="table-wrap"><table><thead><tr><th>User</th><th>Employee ID</th><th>Role</th><th>Department</th><th>Account status</th><th>Last sign-in</th><th>Action</th></tr></thead><tbody><tr><td>Hossam Ahmed</td><td>EMP-1001</td><td>L&amp;D Administrator</td><td>Learning &amp; Development</td><td>Active</td><td>Today, 09:12</td><td><button class="btn outline row-action" type="button">View</button></td></tr><tr><td>Nour El-Din</td><td>EMP-1024</td><td>Employee</td><td>Operations</td><td>Active</td><td>Today, 08:45</td><td><button class="btn outline row-action" type="button">View</button></td></tr><tr><td>Omar Farouk</td><td>EMP-1042</td><td>Employee</td><td>Finance</td><td>Active</td><td>Yesterday, 16:20</td><td><button class="btn outline row-action" type="button">View</button></td></tr><tr><td>Karim Adel</td><td>EMP-1088</td><td>Trainer</td><td>Finance</td><td>Locked</td><td>24 Nov 2026</td><td><button class="btn outline row-action" type="button">Review</button></td></tr><tr><td>Mona Ali</td><td>EMP-1103</td><td>Department Manager</td><td>Operations</td><td>Active</td><td>Today, 08:10</td><td><button class="btn outline row-action" type="button">View</button></td></tr></tbody></table></div></section>
 </main></div></div>
 <div class="toast" id="toast"></div>
-<script>
-document.addEventListener('click', function(e){
- const b=e.target.closest('[data-action],.row-action');
- if(!b)return;
- const toast=document.getElementById('toast');
- toast.textContent=(b.dataset.action||b.textContent.trim())+' selected';
- toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),1800);
-});
-const search=document.querySelector('.table-search');
-if(search) search.addEventListener('input',()=>{
- document.querySelectorAll('tbody tr').forEach(row=>row.style.display=row.innerText.toLowerCase().includes(search.value.toLowerCase())?'':'none');
-});
-const globalSearch=document.getElementById('global-search');
-if(globalSearch) globalSearch.addEventListener('keydown',e=>{
- if(e.key==='Enter'){
-  const q=globalSearch.value.toLowerCase();
-  document.querySelectorAll('tbody tr').forEach(row=>row.style.display=row.innerText.toLowerCase().includes(q)?'':'none');
- }
-});
-const form=document.getElementById('main-form');
-if(form) form.addEventListener('submit',e=>{e.preventDefault();const t=document.getElementById('toast');t.textContent='Enrollment submitted (prototype)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);});
-</script>
+<script src="js/ld-interactions.js"></script>
+
 </body>
 </html>

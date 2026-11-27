@@ -81,7 +81,7 @@
       ld: {
         label: 'L&D Administrator', welcome: 'Welcome, Hossam', sub: 'L&D Administrator home', badges: [['Full access', 'info'], ['L&D Administrator', 'neutral']],
         nav: ['Dashboard', 'Users', 'Program Catalog', 'Sessions', 'Enrollment Requests', 'Direct Enrollment', 'Results', 'Employee History', 'Reports', 'Audit and Security Log', 'System Settings', 'Notification', 'Approvals', 'Training plan', 'Access and HR review'],
-        shortcuts: ['Enrollment Requests', 'Create Session', 'Create User', 'Direct Enrollment', 'Reports'],
+        shortcuts: ['Enrollment Requests', 'Create Session', 'Create User', 'Direct Enrollment', 'Reports', 'Approvals', 'Training plan'],
         blocks: [
           { t: 'kpis', title: 'Pending Items', tag: 'Needs action', cols: 4, items: [['Pending requests', '7'], ['Pending over 3 days', '2'], ['Sessions needing a trainer', '3'], ['Locked accounts', '1']] },
           {
@@ -93,7 +93,7 @@
       },
       manager: {
         label: 'Department Manager', welcome: 'Welcome, Mariam', sub: 'Finance department · Department Manager home', badges: [['No assessment scores shown', 'info'], ['Own department only', 'neutral']],
-        nav: ['Dashboard', 'Team dashboard', 'Department employees', 'Employee records', 'Department reports', 'Attendance', 'Training suggestions', 'Program Catalog', 'Notification'],
+        nav: ['Dashboard', 'Team dashboard', 'Department employees', 'Employee records', 'Department reports', 'Attendance', 'Training suggestions', 'Program catalog', 'Notifications', 'Effectiveness reviews'],
         shortcuts: ['Open team dashboard', 'Training suggestions', 'Program catalog', 'Notification'],
         blocks: [
           { t: 'kpis', title: 'KPI Summary', tag: 'Summary only', tagc: 'info', cols: 3, items: [['Enrollments', '24', 'this period'], ['Approval rate', '88%', 'department total'], ['Completion rate', '78%', 'department total'], ['Attendance rate', '91%', 'department total'], ['Seat usage', '84%', 'department total'], ['Cancellations', '3', 'this period']] },
@@ -104,8 +104,8 @@
       },
       management: {
         label: 'Management', welcome: 'Welcome, Nadia', sub: 'Management home', badges: [['Summary only', 'info'], ['All departments', 'neutral']],
-        nav: ['Dashboard', 'Reports', 'Notification'],
-        shortcuts: ['Open Reports', 'Notification', 'Export Report'],
+        nav: ['Dashboard', 'Reports', 'Approvals', 'Training plan', 'Access and HR review', 'Management review', 'Notification'],
+        shortcuts: ['Open Reports', 'Notification', 'Export Report', 'Approvals', 'Training plan', 'Access and HR review', 'Management review'],
         blocks: [
           { t: 'kpis', title: 'KPI Summary', tag: 'Summary only', cols: 3, items: [['Enrollments', '312', 'this period'], ['Approval rate', '86%', 'all departments'], ['Completion rate', '74%', 'all departments'], ['Attendance rate', '89%', 'all departments'], ['Seat utilization', '81%', 'all departments'], ['Cancellations', '14', 'this period']] },
           {
@@ -136,20 +136,21 @@
       try { sessionStorage.setItem('tms.role', key) } catch (_) { }
       $('#role').value = key;
       $('#sidebar').innerHTML = logo + `<div class="role">${esc(r.label)}</div><div style="height:0"></div>` +
-        r.nav.map((n, i) => { const files = { 'Dashboard': 'dashboard.html', 'Users': 'users.html', 'Program Catalog': 'program-catalog.html', 'Sessions': 'sessions.html', 'Enrollment Requests': 'enrollment-requests.html', 'Direct Enrollment': 'direct-enrollment.html', 'Results': 'results.html', 'Employee History': 'employee-history.html', 'Reports': 'reports.html', 'Audit and Security Log': 'audit-security-log.html', 'System Settings': 'system-settings.html', 'Notification': 'notification.html', 'Approvals': 'approvals.html', 'Training plan': 'training-plan.html', 'Access and HR review': 'access-hr-review.html' }; return `<a class="nav${i ? '' : ' active'}" href="${files[n] || '#'}">${esc(n)}</a>` }).join('') +
+        r.nav.map((n, i) => { const files = { 'Dashboard': 'dashboard.html', 'Users': 'users.html', 'Program Catalog': 'program-catalog.html', 'Sessions': 'sessions.html', 'Enrollment Requests': 'enrollment-requests.html', 'Direct Enrollment': 'direct-enrollment.html', 'Results': 'results.html', 'Employee History': 'employee-history.html', 'Reports': (key === 'management' ? 'management-reports.html' : 'reports.html'), 'Audit and Security Log': 'audit-security-log.html', 'System Settings': 'system-settings.html', 'Notification': 'notification.html', 'Approvals': (key === 'management' ? 'management-approvals.html' : 'approvals.html'), 'Training plan': (key === 'management' ? 'management-training-plan.html' : 'training-plan.html'), 'Access and HR review': (key === 'management' ? 'management-access-review.html' : 'access-hr-review.html'), 'Management review': 'management-review.html', 'Team dashboard': 'manager-team-dashboard.html', 'Department employees': 'manager-department-employees.html', 'Employee records': 'manager-employee-record.html', 'Department reports': 'manager-department-reports.html', 'Attendance': 'manager-attendance.html', 'Training suggestions': 'manager-training-suggestions.html', 'Program catalog': 'manager-program-catalog.html', 'Notifications': 'notification.html', 'Effectiveness reviews': 'manager-effectiveness-reviews.html' }; return `<a class="nav${i ? '' : ' active'}" href="${files[n] || '#'}">${esc(n)}</a>` }).join('') +
         `<div class="spacer"></div><button class="nav muted" data-go="change-password.html" type="button">Change password</button><button class="nav muted" id="logout">Log out</button>`;
       $('#main').innerHTML = `<div class="head"><div><h1>${esc(r.welcome)}</h1><p>${esc(r.sub)}</p></div><div class="badges">${r.badges.map(b => B(b[0], b[1])).join('')}</div></div>
     <section class="card"><h2 style="font:600 20px/28px Inter">Shortcuts</h2><div class="shortcuts">${r.shortcuts.map((s, i) => {
           const shortcutTargets = {
             employee: {'Browse Program Catalog':'program-catalog.html','Notification':'notification.html'},
             trainer: {'Notification':'notification.html','Program Catalog':'program-catalog.html'},
-            ld: {'Enrollment Requests':'enrollment-requests.html','Create Session':'sessions.html','Create User':'users.html','Direct Enrollment':'direct-enrollment.html','Reports':'reports.html'},
-            manager: {'Program catalog':'program-catalog.html','Notification':'notification.html'},
-            management: {'Open Reports':'reports.html','Notification':'notification.html'}
+            ld: {'Enrollment Requests':'enrollment-requests.html','Create Session':'sessions.html','Create User':'users.html','Direct Enrollment':'direct-enrollment.html','Reports':'reports.html','Approvals':'approvals.html','Training plan':'training-plan.html'},
+            manager: {'Open team dashboard':'manager-team-dashboard.html','Training suggestions':'manager-training-suggestions.html','Program catalog':'manager-program-catalog.html','Notification':'notification.html'},
+            management: {'Open Reports':'management-reports.html','Notification':'notification.html','Approvals':'management-approvals.html','Training plan':'management-training-plan.html','Access and HR review':'management-access-review.html','Management review':'management-review.html'}
           };
           const target = (shortcutTargets[key] || {})[s];
           const action = key === 'management' && s === 'Export Report' ? 'export-dashboard' : '';
-          return `<button class="btn${i ? '' : ' primary'}"${target ? ` data-go="${target}"` : action ? ` data-action="${action}"` : ` data-action="info" data-label="${esc(s)}"`}>${esc(s)}</button>`;
+          const managementTarget = key === 'management' && s === 'Open Reports' ? 'management-reports.html' : target;
+          return `<button class="btn${i ? '' : ' primary'}"${managementTarget ? ` data-go="${managementTarget}"` : action ? ` data-action="${action}"` : ` data-action="info" data-label="${esc(s)}"`}>${esc(s)}</button>`;
         }).join('')}</div></section>` +
         r.blocks.map(block).join('');
       document.title = 'TMS – ' + r.label + ' dashboard';

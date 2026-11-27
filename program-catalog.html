@@ -75,4 +75,5 @@ if(!configs[role]){location.replace('dashboard.html')}else{
  render();['category','status','global-search'].forEach(id=>document.getElementById(id).addEventListener(id==='global-search'?'input':'change',render));
  document.addEventListener('click',e=>{const b=e.target.closest('[data-action],[data-name]');if(!b)return;toast(b.dataset.action?b.dataset.action+' selected':(role==='employee'?'Program details opened':'Program selected')+' (prototype)')});
 }
-</script></body></html>
+</script><script src="js/ld-interactions.js"></script>
+</body></html>
