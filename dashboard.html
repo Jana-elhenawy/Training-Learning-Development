@@ -137,7 +137,7 @@
       $('#role').value = key;
       $('#sidebar').innerHTML = logo + `<div class="role">${esc(r.label)}</div><div style="height:0"></div>` +
         r.nav.map((n, i) => { const files = { 'Dashboard': 'dashboard.html', 'Users': 'users.html', 'Program Catalog': 'program-catalog.html', 'Sessions': 'sessions.html', 'Enrollment Requests': 'enrollment-requests.html', 'Direct Enrollment': 'direct-enrollment.html', 'Results': 'results.html', 'Employee History': 'employee-history.html', 'Reports': 'reports.html', 'Audit and Security Log': 'audit-security-log.html', 'System Settings': 'system-settings.html', 'Notification': 'notification.html', 'Approvals': 'approvals.html', 'Training plan': 'training-plan.html', 'Access and HR review': 'access-hr-review.html' }; return `<a class="nav${i ? '' : ' active'}" href="${files[n] || '#'}">${esc(n)}</a>` }).join('') +
-        `<div class="spacer"></div><button class="nav muted" data-href="change-password.html">Change password</button><button class="nav muted" id="logout">Log out</button>`;
+        `<div class="spacer"></div><button class="nav muted" data-go="change-password.html" type="button">Change password</button><button class="nav muted" id="logout">Log out</button>`;
       $('#main').innerHTML = `<div class="head"><div><h1>${esc(r.welcome)}</h1><p>${esc(r.sub)}</p></div><div class="badges">${r.badges.map(b => B(b[0], b[1])).join('')}</div></div>
     <section class="card"><h2 style="font:600 20px/28px Inter">Shortcuts</h2><div class="shortcuts">${r.shortcuts.map((s, i) => {
           const shortcutTargets = {
