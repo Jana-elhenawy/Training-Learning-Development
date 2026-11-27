@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Notifications</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/employee.css">
+<style>
+.tabs{background:#fff;border:1px solid var(--border);border-radius:8px;height:54px;display:flex;align-items:center;gap:0;padding:0 15px;max-width:1136px}
+.tabs button{background:none;border:0;font:500 14px Inter,sans-serif;color:var(--text-2);padding:0;margin-right:24px;cursor:pointer;height:54px}
+.tabs button.on{color:var(--brand)}
+.tabs button:hover{color:var(--brand)}
+.tabs .sp{flex:1}
+.tabs .mark{margin:0 15px 0 0}
+.nlist{background:#fff;border:1px solid var(--border);border-radius:8px;padding:15px;display:flex;flex-direction:column;gap:16px;max-width:1136px;min-height:140px}
+.nrow{background:var(--bg);border-radius:8px;min-height:72px;display:flex;align-items:center;gap:0;padding:0 14px;width:100%;border:0;text-align:left;font:inherit;cursor:pointer}
+.nrow:hover{background:#eceee9}
+.nrow .dot{width:8px;height:8px;border-radius:50%;background:var(--brand);flex:none;margin-right:14px}
+.nrow.read .dot{background:transparent}
+.nrow .id{background:var(--warning-bg);color:var(--warning);border-radius:13px;padding:5px 10px;font:500 12px/16px Inter,sans-serif;flex:none;margin-right:18px}
+.nrow .t{flex:1;min-width:0}
+.nrow .t b{display:block;font:500 14px/1.4 Inter,sans-serif;color:var(--text)}
+.nrow.read .t b{font-weight:400}
+.nrow .t span{display:block;font:400 12px/1.4 Inter,sans-serif;color:var(--text-2);margin-top:6px}
+.nrow .open{font:500 14px Inter,sans-serif;color:var(--brand);margin:0 18px 0 16px}
+.nempty{font:400 16px/1.4 Inter,sans-serif;color:var(--text-2);padding:20px 4px}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar" id="topbar"></header>
+    <main class="emp v35" id="main">
+      <div><h1>Notifications</h1><p class="sub">Unread notifications are marked. Select an item to open its related screen.</p></div>
+      <div class="tabs" role="tablist"><button type="button" class="on" data-tab="all" role="tab">All</button><button type="button" data-tab="unread" role="tab">Unread</button><span class="sp"></span><button type="button" class="mark" id="mark-all">Mark all as read</button></div>
+      <div class="nlist" id="list" aria-live="polite"></div>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="js/employee.js"></script>
+<script>
+buildEmployeeShell('Notification','Workspace / Notifications','Search notifications…');
+/* Copy from Figma "S-22 Notifications — v3.5 Employee"; each item opens its related screen */
+const items=[
+  {id:'N-23',t:'Mandatory training assigned',d:'Workplace Safety is due in 60 days.',go:'program-catalog.html',unread:true},
+  {id:'N-24',t:'Mandatory training reminder',d:'Financial Reporting is due in 7 days.',go:'my-training.html',unread:true},
+  {id:'N-26',t:'Feedback requested',d:'Rate Financial Reporting Basics from 1 to 5.',go:'feedback.html',unread:true},
+  {id:'N-28',t:'Attendance dispute updated',d:'Your attendance dispute was sent for review.',go:'attendance.html?state=submitted',unread:true}
+];
+let tab='all';
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function render(){
+  const q=(document.getElementById('global-search').value||'').trim().toLowerCase();
+  const shown=items.filter(i=>(tab==='all'||i.unread)&&(!q||(i.t+' '+i.d+' '+i.id).toLowerCase().includes(q)));
+  document.getElementById('list').innerHTML=shown.length?shown.map(i=>`<button type="button" class="nrow${i.unread?'':' read'}" data-id="${i.id}"><i class="dot" aria-hidden="true"></i><span class="id">${i.id}</span><span class="t"><b>${esc(i.t)}</b><span>${esc(i.d)}</span></span><span class="open">Open</span></button>${i.unread?'<span class="sr-only">Unread</span>':''}`).join(''):`<div class="nempty">${tab==='unread'?'You have no unread notifications.':'No notifications match your search.'}</div>`;
+  document.querySelectorAll('[data-tab]').forEach(b=>{b.classList.toggle('on',b.dataset.tab===tab);b.setAttribute('aria-selected',b.dataset.tab===tab)});
+}
+document.addEventListener('click',e=>{
+  const tb=e.target.closest('[data-tab]');if(tb){tab=tb.dataset.tab;render();return}
+  if(e.target.id==='mark-all'){items.forEach(i=>i.unread=false);render();toast('All notifications marked as read');return}
+  const r=e.target.closest('.nrow');if(r){const i=items.find(x=>x.id===r.dataset.id);i.unread=false;location.href=i.go}
+});
+document.getElementById('global-search').addEventListener('input',render);
+render();
+</script>
+</body>
+</html>

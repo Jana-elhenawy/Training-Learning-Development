@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – My Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/employee.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar" id="topbar"></header>
+    <main class="emp" id="main"></main>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="js/employee.js"></script>
+<script>
+buildEmployeeShell('My Training','Workspace / My Training','Search…');
+
+/* Enrollment records (copy from Figma "My training — Enrollments and history") */
+const records=[
+  {id:'py',name:'Python Basics',date:'12 Nov 2026',time:'09:00–12:00',status:'Pending'},
+  {id:'java',name:'Java Programming',date:'19 Nov 2026',time:'09:00–12:00',status:'Waitlisted'},
+  {id:'bc',name:'Business Communication',date:'25 Nov 2026',time:'13:00–16:00',status:'Approved'}
+];
+const history=[
+  {name:'Excel for Finance',date:'15 Sep 2026',status:'Completed',outcome:'Completed · Final',result:'88 / 100'},
+  {name:'Information Security',date:'10 Jun 2026',status:'Completed',outcome:'Completed · Final',result:'Pass'}
+];
+
+/* view: list | empty | error | confirm | cancelled | started */
+let view='list',target=null,reason='',started=false;
+const st=qs('state','');
+if(st==='empty')view='empty';
+else if(st==='error')view='error';
+else if(st==='confirm'||st==='reason'){view='confirm';target='py';if(st==='reason')reason='Schedule changed'}
+else if(st==='cancelled'){view='cancelled';records[0].status='Cancelled'}
+else if(st==='started'){view='started';started=true;records[0].status='Approved'}
+
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+function actionFor(r){
+  if(r.status==='Cancelled')return `<a class="link-act" href="enrollment-status.html?program=${r.id}">View details</a>`;
+  if(started&&r.id==='py')return `<a class="link-act" href="session-details.html">View session</a>`;
+  return `<button class="link-act" type="button" data-cancel="${r.id}">Cancel enrollment</button>`;
+}
+function recordsTable(){
+  return `<div class="records" role="table" aria-label="Current enrollments">
+    <div class="r h" role="row"><span>Program / session</span><span>Schedule</span><span>Enrollment status</span><span>Outcome</span><span>Action</span></div>
+    ${records.map(r=>`<div class="r" role="row" data-search><span>${esc(r.name)}</span><span><span class="ln">${r.date}</span><span class="ln">${r.time}</span></span><span>${r.status}</span><span>Not final</span><span>${actionFor(r)}</span></div>`).join('')}
+  </div>`;
+}
+function historyBlock(){
+  return `<h2 class="e-h2">Training history · Finalized outcomes</h2>
+  <div class="records" role="table" aria-label="Finalized training history">
+    <div class="r h" role="row"><span>Program / session</span><span>Date</span><span>Enrollment status</span><span>Outcome</span><span>Result</span></div>
+    ${history.map(h=>`<div class="r" role="row" data-search><span>${h.name}</span><span>${h.date}</span><span>${h.status}</span><span>${h.outcome}</span><span>${h.result}</span></div>`).join('')}
+  </div>`;
+}
+const head=`<h1 class="e-h1">My Training</h1><p class="e-sub">Your enrollments and official training history</p>`;
+const browse=`<a class="eb" href="program-catalog.html">Browse programs</a>`;
+const notes=`<a class="eb2" href="notification.html">View notifications</a>`;
+
+function render(){
+  const m=document.getElementById('main');
+  let html=head;
+  if(view==='empty'){
+    html+=`<div class="guidance">No training yet. Browse the program catalog to find your next session.</div><div class="e-actions">${browse}</div>`;
+  }else if(view==='error'){
+    html+=`<div class="guidance" role="alert">I couldn’t load your training. Your existing enrollments are unchanged. Try again.</div><div class="e-actions"><button class="eb" type="button" id="retry">Try again</button></div>`;
+  }else{
+    html+=recordsTable();
+    if(view==='confirm'){
+      const r=records.find(x=>x.id===target);
+      html+=`<div class="guidance">Cancel ${esc(r.name)}? Cancellation is immediate; no administrator approval is required. A reason is optional. You can cancel Pending, Waitlisted or Approved enrollments before the session starts, even after the enrollment deadline.</div>
+      <div class="e-field"><input class="e-input" id="reason" type="text" placeholder="Cancellation reason (optional)" aria-label="Cancellation reason (optional)" value="${esc(reason)}" maxlength="200"></div>
+      <div class="e-actions"><button class="eb" type="button" id="confirm">Confirm cancellation</button><button class="eb2" type="button" id="keep">Keep enrollment</button></div>`;
+    }else if(view==='cancelled'){
+      html+=`<div class="guidance" role="status">Enrollment cancelled. Your history is retained. A freed Approved seat triggers FIFO waitlist promotion to Pending, not automatic approval.</div><div class="e-actions">${browse}${notes}</div>`;
+    }else if(view==='started'){
+      html+=`<div class="guidance">Python Basics has started. Cancellation is no longer available for this session. Contact the L&amp;D Administrator for help.</div><div class="e-actions">${browse}${notes}</div>`;
+    }else{
+      html+=`<div class="e-actions">${browse}${notes}</div>`;
+    }
+    html+=historyBlock();
+  }
+  m.innerHTML=html;
+  const q=document.getElementById('global-search').value.trim().toLowerCase();
+  if(q)m.querySelectorAll('[data-search]').forEach(el=>{el.hidden=!el.textContent.toLowerCase().includes(q)});
+}
+document.addEventListener('click',e=>{
+  const c=e.target.closest('[data-cancel]');
+  if(c){target=c.dataset.cancel;reason='';view='confirm';render();const f=document.getElementById('reason');if(f)f.focus();return}
+  if(e.target.id==='keep'){view='list';target=null;render();return}
+  if(e.target.id==='retry'){view='list';render();return}
+  if(e.target.id==='confirm'){
+    const r=records.find(x=>x.id===target);if(!r)return;
+    reason=(document.getElementById('reason').value||'').trim();
+    r.status='Cancelled';view='cancelled';target=null;render();
+    toast(reason?'Enrollment cancelled. Reason saved.':'Enrollment cancelled.');
+  }
+});
+wireSearch('#main [data-search]');
+render();
+</script>
+</body>
+</html>

@@ -31,12 +31,13 @@ const HREF={
  'Effectiveness reviews':'manager-effectiveness-reviews.html',
  'Management Reports':'management-reports.html', 'Approvals':'management-approvals.html', 'Training plan':'management-training-plan.html', 'Access and HR review':'management-access-review.html', 'Management review':'management-review.html'
 };
+const hrefOf=(n,k)=>n==='My Training'?(k==='employee'?'my-training.html':''):(k==='management'&&n==='Reports'?'management-reports.html':HREF[n]);
 function buildSidebar(active){
   let k='employee';try{k=sessionStorage.getItem('tms.role')||'employee'}catch(_){}
   if(!NAV[k])k='employee';
   const logo=`<div class="logo"><img src="assets/logo-white.png" alt="RMO" onerror="this.parentNode.innerHTML='<div><div class=wm>RMO</div><small>RIDGELINE MOUNTAIN OUTFITTERS</small></div>'"></div>`;
   document.getElementById('sidebar').innerHTML=logo+`<div class="role">${ROLE_LABEL[k].replace(/&/g,'&amp;')}</div><div></div>`+
-    NAV[k].map(n=>(k==='management'&&n==='Reports'?'management-reports.html':HREF[n])?`<a class="nav${n===active?' cur':''}" href="${k==='management'&&n==='Reports'?'management-reports.html':HREF[n]}">${n.replace(/&/g,'&amp;')}</a>`:`<button class="nav${n===active?' cur':''}" data-toast="${n} screen – to be built by the team">${n.replace(/&/g,'&amp;')}</button>`).join('')+
+    NAV[k].map(n=>hrefOf(n,k)?`<a class="nav${n===active?' cur':''}" href="${hrefOf(n,k)}">${n.replace(/&/g,'&amp;')}</a>`:`<button class="nav${n===active?' cur':''}" data-toast="${n} screen – to be built by the team">${n.replace(/&/g,'&amp;')}</button>`).join('')+
     `<div class="spacer"></div><a class="nav muted${active==='Change password'?' cur':''}" href="change-password.html">Change password</a><a class="nav muted" href="index.html" id="logout">Log out</a>`;
 }
 document.addEventListener('click',e=>{

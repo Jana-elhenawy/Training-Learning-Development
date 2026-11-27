@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Session Details</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/employee.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar" id="topbar"></header>
+    <main class="emp v35" id="main">
+      <div><h1>Session details</h1><p class="sub">Financial Reporting Basics · Enrolled</p></div>
+      <section class="v35-card" style="min-height:430px">
+        <h2>Session materials</h2>
+        <p class="hint">Materials are available to enrolled employees.</p>
+        <div class="mat" style="min-height:66px"><b>Signed agenda and workbook</b><button class="vb" type="button" data-open="Signed agenda and workbook">Open material</button></div>
+        <h2 style="margin-top:34px">Certificate</h2>
+        <div><a class="vb" href="attendance.html?view=certificate">Open certificate (PDF)</a></div>
+      </section>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="js/employee.js"></script>
+<script>
+buildEmployeeShell('My Training','Workspace / My Training / Session details','Search…');
+document.addEventListener('click',e=>{const o=e.target.closest('[data-open]');if(o)toast('Opening “'+o.dataset.open+'” (prototype)')});
+</script>
+</body>
+</html>

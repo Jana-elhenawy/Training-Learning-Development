@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Feedback</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/employee.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar" id="topbar"></header>
+    <main class="emp v35" id="main"></main>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="js/employee.js"></script>
+<script>
+buildEmployeeShell('My Training','Workspace / Feedback','Search…');
+
+/* ?view=list | form | submitted | empty  (4 Figma states) */
+let view=qs('view','list');
+if(!['list','form','submitted','empty'].includes(view))view='list';
+let pending=[
+  {id:'frb',name:'Financial Reporting Basics',date:'12 Nov 2026',due:'Due in 5 days'},
+  {id:'efa',name:'Excel for Analysts',date:'19 Nov 2026',due:'Due in 12 days'}
+];
+let current=pending[0];
+let rating=0;
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+function render(){
+  const m=document.getElementById('main');
+  if(view==='list'||view==='empty'){
+    document.title='TMS – Feedback';
+    m.innerHTML=`<div><h1>Feedback</h1><p class="sub">Your pending feedback requests</p></div>
+    <section class="v35-card" style="max-width:none${view==='empty'||!pending.length?';min-height:330px':';min-height:500px'}">
+      <h2>Pending feedback requests</h2>
+      ${(view==='empty'||!pending.length)?`<p style="font:400 16px/1.4 Inter,sans-serif;color:var(--text-2);margin-top:50px">You have no feedback requests.</p>`:
+        pending.map(p=>`<div class="fb-row"><span class="pill-warn">Pending</span><div class="t"><b>${esc(p.name)}</b><span>${p.date} · ${p.due}</span></div><button class="vb" type="button" data-give="${p.id}">Give feedback</button></div>`).join('')}
+    </section>`;
+  }else if(view==='form'){
+    document.title='TMS – Give feedback';
+    m.innerHTML=`<div><h1>Give feedback</h1><p class="sub">${esc(current.name)} · Session ${current.date}</p></div>
+    <form class="v35-card" id="fform" style="max-width:760px;min-height:560px" novalidate>
+      <h2>How useful was this training?</h2>
+      <fieldset class="rate" aria-labelledby="rl" style="margin-top:6px"><legend class="lbl" id="rl" style="margin-bottom:14px;padding:0 0 0 8px">Rating *</legend>
+        ${[1,2,3,4,5].map(n=>`<input type="radio" name="rating" id="r${n}" value="${n}"${rating===n?' checked':''}><label for="r${n}" style="margin-left:${n===1?'8px':'0'}">${n}</label>`).join('')}
+      </fieldset>
+      <div class="ferr" id="rerr" role="alert" hidden style="padding-left:8px">Please choose a rating from 1 to 5.</div>
+      <div style="padding:0 8px;display:flex;flex-direction:column;gap:12px;margin-top:6px">
+        <label class="lbl" for="comment">Optional comment</label>
+        <textarea class="ta" id="comment" placeholder="Tell us what worked well or could improve" maxlength="1000"></textarea>
+        <span class="hint" style="font:400 12px/1.4 Inter,sans-serif;color:var(--text-2)">Your response is retained with the training record.</span>
+      </div>
+      <div class="btn-row" style="margin-top:auto;padding-right:8px"><button class="vb ghost" type="button" id="cancel" style="min-width:110px">Cancel</button><button class="vb" type="submit" style="min-width:156px">Submit feedback</button></div>
+    </form>`;
+  }else{
+    document.title='TMS – Feedback submitted';
+    m.innerHTML=`<div><h1>Feedback submitted</h1><p class="sub">Thank you for sharing your experience</p></div>
+    <section class="v35-card" style="max-width:760px;min-height:250px;margin-top:20px">
+      <h2>Confirmation</h2>
+      <div class="ok-box" role="status" style="margin:0 8px"><b>Your rating has been submitted.</b><span>You can close this page or return to My Training.</span></div>
+      <div style="padding:10px 8px 0"><a class="vb" href="my-training.html">Return to My Training</a></div>
+    </section>`;
+  }
+}
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-give]');
+  if(g){current=pending.find(p=>p.id===g.dataset.give);rating=0;view='form';render();window.scrollTo(0,0);return}
+  if(e.target.id==='cancel'){view=pending.length?'list':'empty';render()}
+});
+document.addEventListener('change',e=>{if(e.target.name==='rating'){rating=+e.target.value;document.getElementById('rerr').hidden=true}});
+document.addEventListener('submit',e=>{
+  if(e.target.id!=='fform')return;e.preventDefault();
+  if(!rating){document.getElementById('rerr').hidden=false;document.getElementById('r1').focus();return}
+  pending=pending.filter(p=>p.id!==current.id);view='submitted';render();toast('Feedback submitted.');window.scrollTo(0,0);
+});
+render();
+</script>
+</body>
+</html>

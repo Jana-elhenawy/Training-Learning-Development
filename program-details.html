@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Program Details</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/employee.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar" id="topbar"></header>
+    <main class="emp" id="main"></main>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="js/employee.js"></script>
+<script>
+buildEmployeeShell('Program Catalog','Workspace / Program Details','Search…');
+
+/* ?state=requested shows the pending-request variant from Figma (2006:6813) */
+let requested=qs('state','')==='requested';
+let selected='open';
+
+const program={
+  tag:'SAFETY',title:'Trail Safety Fundamentals',
+  facts:[['Duration','12 hours'],['Mode','In-person'],['Audience','All outdoor guides']],
+  about:'Learn the core skills for staying safe on remote trails, from risk assessment to emergency response, with hands-on practice.',
+  objectives:['Assess trail and weather risks','Apply first-aid basics in the field','Plan and communicate an emergency response'],
+  prereq:[['Program X','Completed']],
+  criteria:['Min attendance: 80%','Passing score: 70'],
+  materials:[['Course workbook','PDF · 2.4 MB','#'],['Reporting standards reference','External link','#'],['Pre-session checklist','PDF · 420 KB','#']]
+};
+const sessions={
+  full:{when:'14 Nov · 09:00–17:00',meta:'In-person · Sam Carter',pct:100,cap:'Full · Waitlist 3',badge:'Full',cls:'full'},
+  open:{when:'02 Dec · 09:00–17:00',meta:'Online · Lena Ortiz',pct:60,cap:'12 seats left of 20',badge:'Open',cls:'open'}
+};
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+function sessCard(k){
+  const s=sessions[k];
+  const badge=(requested&&k==='open')?'Requested':s.badge;
+  const cls=s.cls+(selected===k?' sel':'')+((requested&&k==='open')?' req':'');
+  return `<button type="button" class="sess ${cls}" data-sess="${k}" aria-pressed="${selected===k}">
+    <span class="when">${s.when}</span><span class="meta">${s.meta}</span>
+    <span class="bar"><i style="width:${s.pct}%"></i></span>
+    <span class="cap">${s.cap}</span><span class="st">${badge}</span></button>`;
+}
+function ctaLabel(){
+  if(requested)return null;
+  return selected==='full'?'Join Waitlist':'Request Enrollment';
+}
+function render(){
+  const lbl=ctaLabel();
+  document.getElementById('main').innerHTML=`<div class="pd">
+  <section class="pd-card pd-hero">
+    <div>
+      <span class="tag">${program.tag}</span>
+      <h1>${program.title}</h1>
+      <div class="pd-facts">${program.facts.map(f=>`<div class="pd-fact"><span>${f[0]}</span><b>${f[1]}</b></div>`).join('')}</div>
+    </div>
+    ${requested?`<button class="pd-cta" disabled>Enrollment requested</button>`:`<button class="pd-cta" id="cta-top">${lbl==='Join Waitlist'?'Join Waitlist':'Request Enrollment'}</button>`}
+  </section>
+  <div class="pd-grid">
+    <div class="pd-left">
+      <section class="pd-card"><h2>About this program</h2><p>${esc(program.about)}</p></section>
+      <section class="pd-card"><h2>Learning objectives</h2><ul class="pd-list">${program.objectives.map(o=>`<li>${esc(o)}</li>`).join('')}</ul></section>
+      <div class="pd-two">
+        <section class="pd-card"><h2>Prerequisites</h2><ul class="pd-list">${program.prereq.map(p=>`<li>${p[0]}</li>`).join('')}</ul><span class="pd-pill">${program.prereq[0][1]}</span></section>
+        <section class="pd-card"><h2>Completion criteria</h2><ul class="pd-list">${program.criteria.map(c=>`<li>${c}</li>`).join('')}</ul></section>
+      </div>
+    </div>
+    <section class="pd-card right">
+      <h2>Upcoming sessions</h2>
+      ${sessCard('full')}${sessCard('open')}
+      ${requested?`<div class="pd-note" role="status">Your request is pending approval. We will email you once it is reviewed.</div>`:''}
+      <div class="pd-spacer"></div>
+      ${requested?`<button class="pd-cta wide" disabled>Request pending</button>`:`<button class="pd-cta wide" id="cta-bottom">${lbl}</button>`}
+    </section>
+  </div>
+  <section class="v35-card" aria-label="Training materials" style="max-width:none">
+    <h2>Training materials</h2>
+    <div class="pd-mats">${program.materials.map(m=>`<div class="mat"><div><b>${m[0]}</b><span>${m[1]}</span></div><button class="vb" type="button" data-open="${esc(m[0])}">Open</button></div>`).join('')}</div>
+  </section>
+  </div>`;
+}
+document.addEventListener('click',e=>{
+  const s=e.target.closest('[data-sess]');
+  if(s){selected=s.dataset.sess;render();return}
+  if(e.target.id==='cta-top'||e.target.id==='cta-bottom'){
+    location.href='request-enrollment.html?state='+(selected==='full'?'full':'ready');return;
+  }
+  const o=e.target.closest('[data-open]');
+  if(o){toast('Opening “'+o.dataset.open+'” (prototype)')}
+});
+render();
+</script>
+</body>
+</html>

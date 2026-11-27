@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Request Enrollment</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/employee.css">
+<style>.records .r.elig{--cols:33.3fr 24.2fr 21.8fr 20.7fr}</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar" id="topbar"></header>
+    <main class="emp" id="main"></main>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="js/employee.js"></script>
+<script>
+buildEmployeeShell('Program Catalog','Workspace / Request Enrollment','Search…');
+
+/* ?state= ready | prereq | conflict | full | submitted | unavailable   (6 Figma states) */
+const SESSION='Python Basics · Session S-101';
+const info={
+  open:['Open · 12 Nov 2026, 09:00–12:00 · Training Room A · Trainer: Dr. Ahmed','Capacity: 15 · Approved: 12 · Seats left: 3 · Deadline: 10 Nov 2026'],
+  full:['Full · 12 Nov 2026, 09:00–12:00 · Training Room A · Trainer: Dr. Ahmed','Capacity: 15 · Approved: 15 · Seats left: 0 · Deadline: 10 Nov 2026']
+};
+const ok=(c,res,next='Continue')=>[c,res,'Ready',next];
+const base=[['Prerequisites','Met','Ready','Continue'],['Duplicate enrollment','None found','Ready','Continue'],['Schedule overlap','No conflict','Ready','Continue']];
+const S={
+  ready:{title:'Request Enrollment',info:'open',rows:base,
+    note:'Submitting creates a Pending request for the L&D Administrator. A Pending request does not reserve a seat. Capacity and overlap are checked again on approval.',
+    primary:['Submit enrollment request','submit'],secondary:['Back to program','program-details.html']},
+  prereq:{title:'Prerequisite Required',info:'open',rows:[['Prerequisites','Missing','Blocked','Complete prerequisite'],base[1],base[2]],
+    note:'You must complete Introduction to Programming before requesting Python Basics. Your request has not been submitted.',
+    primary:['View prerequisite','program-details.html?program=intro'],secondary:['Back to program','program-details.html']},
+  conflict:{title:'Schedule Conflict',info:'open',rows:[base[0],base[1],['Schedule overlap','Overlap found','Warning','Review times']],
+    note:'Python Basics overlaps your approved Excel for Finance session on 12 Nov, 10:00–12:00. You may submit a Pending request, but approval will be blocked until the overlap is resolved.',
+    primary:['Submit with warning','submit'],secondary:['Back to program','program-details.html']},
+  full:{title:'Join Waitlist',info:'full',rows:base,
+    note:'Joining creates a Waitlisted request. If an Approved seat is freed before the deadline, the oldest request becomes Pending and awaits administrator approval. Waitlisted requests do not occupy seats.',
+    primary:['Join waitlist','waitlist'],secondary:['Back to program','program-details.html']},
+  submitted:{title:'Request Submitted',info:'open',rows:base,
+    note:'Pending · Your Python Basics request was sent to the L&D Administrator. No seat is reserved until approval. Check My Training or your notifications for the decision.',
+    primary:['Go to My Training','my-training.html'],secondary:['View notifications','notification.html']},
+  unavailable:{title:'Enrollment Unavailable',info:'open',rows:[base[0],['Duplicate enrollment','Existing Pending request','Blocked','View My Training'],base[2]],
+    note:'A duplicate request cannot be submitted. Requests and waitlist entry are also unavailable after the enrollment deadline or when the session is not Open / Full. A trainer cannot enroll in their own session.',
+    primary:['View existing request','my-training.html'],secondary:['Back to program','program-details.html']}
+};
+let key=qs('state','ready');if(!S[key])key='ready';
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+function render(){
+  const s=S[key],i=info[s.info];
+  document.title='TMS – '+s.title;
+  document.getElementById('main').innerHTML=`
+    <h1 class="e-h1">${s.title}</h1>
+    <p class="e-sub">${SESSION}</p>
+    <div class="guidance"><div>${i[0]}</div><div>${i[1]}</div></div>
+    <h2 class="e-h2">Review your eligibility</h2>
+    <div class="records" role="table" aria-label="Eligibility checks">
+      <div class="r elig h" role="row"><span>Check</span><span>Result</span><span>Request status</span><span>Next action</span></div>
+      ${s.rows.map(r=>`<div class="r elig" role="row">${r.map(c=>`<span>${esc(c)}</span>`).join('')}</div>`).join('')}
+    </div>
+    <div class="guidance" ${key==='submitted'?'role="status"':''}>${esc(s.note)}</div>
+    <div class="e-actions">
+      <button class="eb" type="button" data-go="${s.primary[1]}">${s.primary[0]}</button>
+      <button class="eb2" type="button" data-go="${s.secondary[1]}">${s.secondary[0]}</button>
+    </div>`;
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-go]');if(!b)return;
+  const g=b.dataset.go;
+  if(g==='submit'){key='submitted';history.replaceState(null,'','?state=submitted');render();toast('Enrollment request submitted. Status: Pending.');window.scrollTo(0,0);return}
+  if(g==='waitlist'){key='submitted';S.submitted.note='Waitlisted · You joined the waitlist for Python Basics. Waitlisted requests do not occupy seats. You will be notified if a seat is freed.';history.replaceState(null,'','?state=submitted');render();toast('You joined the waitlist.');window.scrollTo(0,0);return}
+  location.href=g;
+});
+render();
+</script>
+</body>
+</html>

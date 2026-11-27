@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Enrollment Details and History</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/employee.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar" id="topbar"></header>
+    <main class="emp v35" id="main">
+      <div><h1>My training</h1><p class="sub">Enrollment details and history</p></div>
+      <section class="v35-card" style="min-height:620px">
+        <h2>Financial Reporting Basics</h2>
+        <div><span class="chip-warn">Late cancellation</span></div>
+        <p class="hint">Cancellation is allowed before the session starts for Pending, Waitlisted and Approved enrollments.</p>
+        <div class="hist" role="table" aria-label="Enrollment status history" style="margin-top:20px">
+          <div class="hh">Date</div><div class="hh">Status</div><div class="hh">Changed by</div><div class="hh">Reason</div>
+          <div class="d">01 Nov</div><div>Pending</div><div>System</div><div>Request submitted</div>
+          <div class="d">03 Nov</div><div>Approved</div><div>L&amp;D Administrator</div><div>Seat available</div>
+          <div class="d">11 Nov</div><div>Cancelled</div><div>Amira Hassan</div><div><span class="chip-warn">Late cancellation</span></div>
+        </div>
+        <div class="v35-actions">
+          <a class="vb ghost" href="my-training.html">Back to My Training</a>
+          <a class="vb" href="my-training.html?state=confirm">Cancel enrollment</a>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="js/employee.js"></script>
+<script>buildEmployeeShell('My Training','Workspace / My Training / Enrollment history','Search…');</script>
+</body>
+</html>
