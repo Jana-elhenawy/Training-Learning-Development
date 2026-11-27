@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Activate account</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+.box.err{background:#ffeaea;border-color:var(--danger);color:var(--danger);padding:18px;min-height:110px}
+.auth-card.wide .field input[readonly]{background:#fff;color:var(--text)}
+.auth-card.wide.w3,.auth-card.wide.w4{margin-top:0}
+.auth-card.wide label{margin-top:2px}
+.auth-card.wide .note{font-size:20px;line-height:1.4;color:var(--brand-dark);margin:0 0 16px}
+#s-done .box,#s-expired .box{min-height:110px}
+</style>
+</head>
+<body>
+<div class="auth">
+  <div class="bg"></div><div class="ridge"></div><div class="corner"></div>
+  <div class="brand-top"><img src="assets/logo-color.png" alt="RMO" onerror="this.replaceWith(Object.assign(document.createElement('div'),{innerHTML:'<div class=wm>RMO</div><div class=sub>RIDGELINE MOUNTAIN OUTFITTERS</div>'}))"></div>
+
+  <div class="auth-card wide w3" id="card">
+    <!-- Activation form — valid link -->
+    <section class="step active" id="s-form">
+      <h2>Activate Your Account</h2>
+      <p>Welcome, Amira Hassan. Set your password to activate your account.</p>
+      <label for="u">Username</label>
+      <div class="field"><input id="u" value="amira.hassan" readonly aria-readonly="true"></div>
+      <div class="box dashed"><b>Password policy</b>• At least 8 characters; uppercase, lowercase and a digit<br>• Not your username; not one of your last 3 passwords</div>
+      <label for="np">New Password</label>
+      <div class="field"><input id="np" type="password" placeholder="New password" autocomplete="new-password"></div>
+      <label for="cp">Confirm Password</label>
+      <div class="field"><input id="cp" type="password" placeholder="Confirm password" autocomplete="new-password"></div>
+      <div class="msg-error" id="err" role="alert" style="position:static;margin:0 0 16px;padding:10px 12px;font-size:14px"></div>
+      <button class="pill primary" id="activate" type="button">Activate Account</button>
+    </section>
+
+    <!-- Account activated -->
+    <section class="step" id="s-done">
+      <h2>Account Activated</h2>
+      <div class="box" style="margin-top:24px">Your password has been set and your account is now active. You can log in with your username and new password.</div>
+      <a href="index.html"><button class="pill primary" type="button">Go to Login</button></a>
+    </section>
+
+    <!-- Link expired / invalid -->
+    <section class="step" id="s-expired">
+      <h2>Activation Link Expired or Invalid</h2>
+      <div class="box err" role="alert" style="margin-top:44px">This activation link has expired or is no longer valid.</div>
+      <p class="note">Contact the L&amp;D Administrator to request a new activation link.</p>
+      <a href="index.html"><button class="pill primary" type="button">Back to Login</button></a>
+    </section>
+  </div>
+  <div class="auth-foot"><p>© 2026 RMO. All rights reserved.</p><div><span>Privacy</span><span>Terms</span><span>Help</span></div></div>
+</div>
+<script>
+/* ?state=expired shows the expired/invalid link screen; default is the valid-link form */
+const show=id=>{document.querySelectorAll('.step').forEach(s=>s.classList.toggle('active',s.id===id));document.title='TMS – '+document.querySelector('#'+id+' h2').textContent};
+const st=new URLSearchParams(location.search).get('state');
+if(st==='expired')show('s-expired');else if(st==='done')show('s-done');
+document.getElementById('activate').addEventListener('click',()=>{
+  const p=np.value,c=cp.value,u=document.getElementById('u').value,e=document.getElementById('err');let m='';
+  if(p.length<8||!/[A-Z]/.test(p)||!/[a-z]/.test(p)||!/\d/.test(p))m='Password does not meet the policy above.';
+  else if(p.toLowerCase()===u.toLowerCase())m='Password cannot be your username.';
+  else if(p!==c)m='Passwords do not match.';
+  e.textContent=m;e.classList.toggle('show',!!m);
+  if(!m)show('s-done');else document.getElementById(p.length<8?'np':'cp').focus();
+});
+</script>
+</body>
+</html>

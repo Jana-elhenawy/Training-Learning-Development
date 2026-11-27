@@ -95,6 +95,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 let role='employee';
 try{role=sessionStorage.getItem('tms.role')||'employee'}catch(e){}
 if(!roleData[role]) role='employee';
+if(role==='employee'){location.replace('employee-notifications.html');}
 const data=roleData[role];
 const logo=`<div class="logo"><img src="assets/logo-white.png" alt="RMO" onerror="this.parentNode.innerHTML='<div><div class=wm>RMO</div><small>RIDGELINE MOUNTAIN OUTFITTERS</small></div>'"></div>`;
 document.getElementById('sidebar').innerHTML=logo+`<div class="role">${esc(data.label)}</div><div></div>`+

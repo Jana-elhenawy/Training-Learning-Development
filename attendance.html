@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – My Training · Attendance</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/employee.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar" id="topbar"></header>
+    <main class="emp v35" id="main"></main>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="js/employee.js"></script>
+<script>
+buildEmployeeShell('My Training','Workspace / My Training / Attendance','Search…');
+
+/* ?view=attendance (default) | certificate     ?state=submitted shows the dispute already filed */
+let view=qs('view','attendance');
+let disputed=qs('state','')==='submitted';
+const main=document.getElementById('main');
+
+function render(){
+  if(view==='certificate'){
+    document.title='TMS – Certificate of completion';
+    main.innerHTML=`<div><h1>Certificate of completion</h1><p class="sub">Financial Reporting Basics</p></div>
+    <div class="cert" role="img" aria-label="Certificate of Completion for Amira Hassan">
+      <div class="org">RIDGELINE MOUNTAIN OUTFITTERS</div>
+      <h2>Certificate of Completion</h2>
+      <div class="small">This certifies that</div>
+      <div class="nm">Amira Hassan</div>
+      <div class="did">completed Financial Reporting Basics</div>
+      <div class="small">Certificate no. RMO-TMS-2026-01482</div>
+      <div class="small" style="margin-top:12px">Issued 23 Nov 2026</div>
+    </div>
+    <div class="cert-actions"><a class="vb ghost" href="session-details.html" style="min-width:100px">Back</a><button class="vb" type="button" id="pdf">Open certificate (PDF)</button></div>`;
+    return;
+  }
+  document.title='TMS – My Training · Attendance';
+  main.innerHTML=`<div><h1>My training · Attendance</h1><p class="sub">Financial Reporting Basics</p></div>
+  <section class="v35-card" style="max-width:none;min-height:480px">
+    <h2>Attendance by session date</h2>
+    <div class="att" role="table" aria-label="Attendance by session date" style="margin-top:-2px">
+      <div class="hh">Session date</div><div class="hh">Status</div><div class="hh">Recorded by</div><div class="hh">Dispute window</div><div class="hh">Action</div>
+      <div class="d">12 Nov 2026</div><div><span class="pill-ok">Present</span></div><div>Dr. Khaled</div><div>${disputed?'Disputed':'2 days remaining'}</div>
+      <div>${disputed?'—':'<button class="dispute-btn" type="button" id="dispute">Dispute</button>'}</div>
+      <div class="d">13 Nov 2026</div><div><span class="pill-ok">Late</span></div><div>Dr. Khaled</div><div>Closed</div><div>—</div>
+    </div>
+    ${disputed?`<div class="warn-box"><b>Attendance dispute</b><span>Submitted 23 Nov 2026 · Trainer and administrator notified · Target resolution within 5 days</span></div>`:''}
+  </section>
+  ${disputed?`<div class="confirm-bar" role="status" style="max-width:1136px;margin-top:6px">Dispute submitted. The trainer and L&amp;D Administrator were notified.</div>`:''}`;
+}
+document.addEventListener('click',e=>{
+  if(e.target.id==='dispute'){disputed=true;render();toast('Dispute submitted.');return}
+  if(e.target.id==='pdf')toast('Opening certificate PDF (prototype)');
+});
+render();
+</script>
+</body>
+</html>
