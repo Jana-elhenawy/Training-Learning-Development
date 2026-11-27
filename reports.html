@@ -58,4 +58,5 @@ if(!configs[role]){location.replace('dashboard.html')}else{
  document.getElementById('global-search').addEventListener('input',e=>document.querySelectorAll('#rows tr').forEach(tr=>tr.style.display=tr.innerText.toLowerCase().includes(e.target.value.toLowerCase())?'':'none'));
  document.addEventListener('click',e=>{const b=e.target.closest('[data-action],.row-action');if(b)toast((b.dataset.action||b.textContent.trim())+' selected (prototype)')});
 }
-</script></body></html>
+</script><script src="js/ld-interactions.js"></script>
+</body></html>

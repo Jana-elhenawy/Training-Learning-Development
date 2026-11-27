@@ -32,7 +32,7 @@
 <div class="crumb">Workspace / Training Plan</div>
 <div class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="global-search" placeholder="Search."></div>
 <button class="icon-btn" aria-label="Notifications" onclick="location.href='notification.html'"><svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></button>
-<button class="icon-btn" aria-label="Profile" onclick="location.href='users.html'"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></button>
+<button class="icon-btn" aria-label="Profile" onclick="location.href='change-password.html'"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></button>
 </header>
 <main>
 <div class="head"><div><h1>Training Plan</h1><p>Plan training activity, required programs, and delivery targets.</p></div><div class="badges"><span class="badge b-info">Full access</span><span class="badge b-neutral">L&amp;D Administrator</span></div></div>
@@ -40,27 +40,7 @@
 <section class="card"><div class="kpis" style="grid-template-columns:repeat(4,minmax(0,1fr))"><div class="kpi"><span class="l">Planned programs</span><span class="v">12</span></div><div class="kpi"><span class="l">Target participants</span><span class="v">180</span></div><div class="kpi"><span class="l">Allocated budget</span><span class="v">EGP 450,000</span></div><div class="kpi"><span class="l">Completion target</span><span class="v">85%</span></div></div></section><section class="card"><div class="card-h"><h2>Training Plan list</h2><span class="badge b-neutral">3 records</span></div><div class="table-wrap"><table><thead><tr><th>Program</th><th>Department</th><th>Target participants</th><th>Planned period</th><th>Owner</th><th>Status</th><th>Action</th></tr></thead><tbody><tr><td>Workplace Safety</td><td>All departments</td><td>80</td><td>Q4 2026</td><td>L&amp;D Team</td><td>Approved</td><td><button class="btn outline row-action" type="button">View</button></td></tr><tr><td>Excel for Analysts</td><td>Finance</td><td>35</td><td>Q4 2026</td><td>Hossam Ahmed</td><td>In progress</td><td><button class="btn outline row-action" type="button">View</button></td></tr><tr><td>Leadership Essentials</td><td>Management</td><td>18</td><td>Q1 2027</td><td>L&amp;D Team</td><td>Draft</td><td><button class="btn outline row-action" type="button">View</button></td></tr></tbody></table></div></section>
 </main></div></div>
 <div class="toast" id="toast"></div>
-<script>
-document.addEventListener('click', function(e){
- const b=e.target.closest('[data-action],.row-action');
- if(!b)return;
- const toast=document.getElementById('toast');
- toast.textContent=(b.dataset.action||b.textContent.trim())+' selected';
- toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),1800);
-});
-const search=document.querySelector('.table-search');
-if(search) search.addEventListener('input',()=>{
- document.querySelectorAll('tbody tr').forEach(row=>row.style.display=row.innerText.toLowerCase().includes(search.value.toLowerCase())?'':'none');
-});
-const globalSearch=document.getElementById('global-search');
-if(globalSearch) globalSearch.addEventListener('keydown',e=>{
- if(e.key==='Enter'){
-  const q=globalSearch.value.toLowerCase();
-  document.querySelectorAll('tbody tr').forEach(row=>row.style.display=row.innerText.toLowerCase().includes(q)?'':'none');
- }
-});
-const form=document.getElementById('main-form');
-if(form) form.addEventListener('submit',e=>{e.preventDefault();const t=document.getElementById('toast');t.textContent='Enrollment submitted (prototype)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);});
-</script>
+<script src="js/ld-interactions.js"></script>
+
 </body>
 </html>
