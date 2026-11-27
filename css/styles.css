@@ -15,7 +15,7 @@ button{font-family:inherit;cursor:pointer}
   background:
     radial-gradient(ellipse at 70% 15%,#f6c98f 0%,rgba(246,201,143,0) 45%),
     linear-gradient(180deg,#e9b98a 0%,#b9a58f 28%,#6f7f6a 52%,#3d5648 75%,#2c4034 100%);}
-.auth .bg{position:absolute;inset:0;background:url(../assets/bg.jpg) center/cover no-repeat}
+.auth .bg{position:absolute;inset:0;background:url(../assets/bg.png) center/cover no-repeat}
 .auth .ridge{position:absolute;inset:auto 0 0 0;height:45%;
   background:linear-gradient(160deg,transparent 35%,rgba(38,58,44,.85) 36%),linear-gradient(200deg,transparent 40%,rgba(30,48,36,.9) 41%)}
 .auth .corner{position:absolute;inset:0 auto auto 0;width:26%;height:100%;background:#f4f5f4;
@@ -127,7 +127,7 @@ td{border-top:1px solid var(--border);padding:12px 16px;font:400 16px/24px Inter
 @media(max-width:900px){.sidebar{display:none}.search{display:none}.kpis{grid-template-columns:1fr!important}main{padding:16px}}
 
 /* ===== Auth v2: matched to Figma geometry (1440x1024 frames) ===== */
-.auth .bg{background:url(../assets/bg.jpg) center/cover no-repeat,url(../assets/bg.svg) center/cover no-repeat}
+.auth .bg{background:url(../assets/bg.png) center/cover no-repeat,url(../assets/bg.svg) center/cover no-repeat}
 .auth .ridge{display:none}
 .auth .corner{width:100%;height:100%;clip-path:polygon(0 0,31% 0,0 73%);opacity:1;background:#f4f5f4}
 .auth-card{width:476px;height:665px;padding:80px 53px 0;border-radius:48px;background:rgba(255,255,255,.28);border:0;box-shadow:0 4px 24px rgba(0,0,0,.06)}
@@ -168,3 +168,26 @@ td{border-top:1px solid var(--border);padding:12px 16px;font:400 16px/24px Inter
 .auth-foot{color:#f4f5f4}
 .brand-top img{height:auto;width:240px}
 .sidebar .logo img{filter:none}
+
+
+/* L&D screen polish and responsive layout */
+main{width:100%;max-width:none;padding:28px clamp(16px,2.4vw,36px) 40px}
+.main-wrap{min-width:0}
+.table-wrap{width:100%;overflow-x:auto;border-radius:8px}
+.table-wrap table{min-width:760px}
+.card{box-shadow:0 1px 2px rgba(24,62,44,.05)}
+.btn:focus-visible,.nav:focus-visible,.icon-btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(42,93,52,.28);outline-offset:2px}
+tr.row-highlight{background:#f0f6ed;transition:background .2s}
+.ld-dialog{border:0;border-radius:14px;padding:0;width:min(560px,calc(100vw - 28px));max-width:none;box-shadow:0 24px 80px rgba(0,0,0,.24)}
+.ld-dialog::backdrop{background:rgba(18,35,24,.42);backdrop-filter:blur(2px)}
+.ld-dialog-card{position:relative;padding:26px;display:flex;flex-direction:column;gap:18px;background:#fff;border:1px solid var(--border-subtle);border-radius:14px}
+.ld-dialog-card h2{font-size:22px;color:var(--brand-dark);margin:0 34px 0 0}
+.ld-dialog-hint{font-size:13px;color:var(--text-muted);margin-top:-10px}
+.ld-dialog-close{position:absolute;right:14px;top:12px;border:0;background:transparent;font-size:26px;color:var(--text-2);cursor:pointer}
+.ld-dialog-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ld-dialog-fields label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--text-2)}
+.ld-dialog-fields label:has(textarea){grid-column:1/-1}
+.ld-dialog-fields .control{width:100%;min-height:40px;border:1px solid var(--border);border-radius:8px;padding:8px 10px;background:#fff;font:14px Inter,sans-serif;color:var(--text)}
+.ld-dialog-actions{display:flex;justify-content:flex-end;gap:10px;padding-top:6px;border-top:1px solid var(--border-subtle)}
+@media(max-width:900px){.app{display:block}.sidebar{position:relative;width:100%;height:auto;max-height:none;display:flex;flex-direction:row;align-items:center;flex-wrap:wrap;padding:12px}.sidebar .logo{width:130px;height:54px}.sidebar .logo img{width:120px}.sidebar .role{margin:0 10px 0 0}.sidebar .spacer{display:none}.nav{width:auto}.main-wrap{width:100%}.topbar{position:relative;border-radius:0;gap:12px}.search{width:min(260px,42vw)}}
+@media(max-width:600px){main{padding:18px 12px 28px}.topbar{padding:10px;gap:8px}.crumb{font-size:12px}.search{width:40vw;height:36px}.head h1{font-size:24px}.row{gap:12px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}.ld-dialog-fields{grid-template-columns:1fr}.ld-dialog-card{padding:22px 16px}.page-actions{flex-wrap:wrap}}

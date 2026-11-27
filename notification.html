@@ -60,7 +60,7 @@ const roleData = {
   ]
  },
  manager: {
-  label:'Department Manager', nav:['Dashboard','Team dashboard','Department employees','Employee records','Department reports','Attendance','Training suggestions','Program catalog','Notifications'],
+  label:'Department Manager', nav:['Dashboard','Team dashboard','Department employees','Employee records','Department reports','Attendance','Training suggestions','Program catalog','Notifications','Effectiveness reviews'],
   title:'Team Notifications', subtitle:'Updates about your department’s training nominations and team requirements.',
   badges:['Department Manager','Department notifications only'],
   items:[
@@ -70,7 +70,7 @@ const roleData = {
   ]
  },
  management: {
-  label:'Management', nav:['Dashboard','Reports','Notification'],
+  label:'Management', nav:['Dashboard','Reports','Approvals','Training plan','Access and HR review','Management review','Notification'],
   title:'Management Notifications', subtitle:'High-level updates and report alerts across departments.',
   badges:['Management view','Summary only'],
   items:[
@@ -90,16 +90,17 @@ const roleData = {
   ]
  }
 };
-const paths={'Dashboard':'dashboard.html','Users':'users.html','Program Catalog':'program-catalog.html','Sessions':'sessions.html','Enrollment Requests':'enrollment-requests.html','Direct Enrollment':'direct-enrollment.html','Results':'results.html','Employee History':'employee-history.html','Reports':'reports.html','Audit and Security Log':'audit-security-log.html','System Settings':'system-settings.html','Notification':'notification.html','Notifications':'notification.html','Approvals':'approvals.html','Training plan':'training-plan.html','Access and HR review':'access-hr-review.html'};
+const paths={'Dashboard':'dashboard.html','Users':'users.html','Program Catalog':'program-catalog.html','Sessions':'sessions.html','Enrollment Requests':'enrollment-requests.html','Direct Enrollment':'direct-enrollment.html','Results':'results.html','Employee History':'employee-history.html','Reports':'reports.html','Audit and Security Log':'audit-security-log.html','System Settings':'system-settings.html','Notification':'notification.html','Notification':'notification.html','Approvals':'approvals.html','Training plan':'training-plan.html','Access and HR review':'access-hr-review.html','Team dashboard':'manager-team-dashboard.html','Department employees':'manager-department-employees.html','Employee records':'manager-employee-record.html','Department reports':'manager-department-reports.html','Attendance':'manager-attendance.html','Training suggestions':'manager-training-suggestions.html','Program catalog':'manager-program-catalog.html','Effectiveness reviews':'manager-effectiveness-reviews.html'};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let role='employee';
 try{role=sessionStorage.getItem('tms.role')||'employee'}catch(e){}
 if(!roleData[role]) role='employee';
 if(role==='employee'){location.replace('employee-notifications.html');}
+const rolePaths = role==='management' ? {...paths, 'Reports':'management-reports.html', 'Approvals':'management-approvals.html', 'Training plan':'management-training-plan.html', 'Access and HR review':'management-access-review.html', 'Management review':'management-review.html'} : paths;
 const data=roleData[role];
 const logo=`<div class="logo"><img src="assets/logo-white.png" alt="RMO" onerror="this.parentNode.innerHTML='<div><div class=wm>RMO</div><small>RIDGELINE MOUNTAIN OUTFITTERS</small></div>'"></div>`;
 document.getElementById('sidebar').innerHTML=logo+`<div class="role">${esc(data.label)}</div><div></div>`+
- data.nav.map((n,i)=>`<a class="nav${n==='Notification'||n==='Notifications'?' active':''}" href="${paths[n]||'#'}">${esc(n)}</a>`).join('')+
+ data.nav.map((n,i)=>`<a class="nav${n==='Notification'||n==='Notifications'?' active':''}" href="${rolePaths[n]||'#'}">${esc(n)}</a>`).join('')+
  `<div class="spacer"></div><a class="nav muted" href="change-password.html">Change password</a><a class="nav muted" href="index.html" id="logout">Log out</a>`;
 document.getElementById('page-title').textContent=data.title;
 document.getElementById('page-subtitle').textContent=data.subtitle;

@@ -1,0 +1,27 @@
+
+/* Management actor screens */
+.mgmt-main{padding:24px 32px 40px;max-width:1500px;display:flex;flex-direction:column;gap:20px}
+.mgmt-sub{color:var(--text-2);font-size:16px;margin-top:4px}
+.mgmt-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.mgmt-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.mgmt-kpi{background:#fff;border:1px solid var(--border);border-radius:8px;padding:16px;min-height:116px;display:flex;flex-direction:column;gap:8px}
+.mgmt-kpi span{font-size:14px;color:var(--text-2)}.mgmt-kpi strong{font-size:30px;line-height:1.2}.mgmt-kpi small{font-size:12px;color:var(--text-muted)}
+.mgmt-panel{background:#fff;border:1px solid var(--border);border-radius:8px;padding:16px;min-width:0}
+.mgmt-panel h2{font-size:20px;margin-bottom:14px}
+.mgmt-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:4px 0 18px}
+.mgmt-field label{display:block;font-size:13px;color:var(--text-2);margin-bottom:6px}
+.mgmt-field input,.mgmt-field select,.mgmt-field textarea{width:100%;min-height:44px;border:1px solid var(--border);border-radius:8px;padding:10px 12px;background:#fff;color:var(--text);font:14px Inter}
+.mgmt-field textarea{min-height:100px;resize:vertical}
+.mgmt-alert{background:var(--warning-bg);color:var(--warning);border-radius:8px;padding:14px 16px;font-size:14px}
+.mgmt-note{background:var(--surface-subtle);padding:18px 20px;border-radius:8px;line-height:1.55;font-size:14px}
+.mgmt-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.mgmt-status{font-size:12px;font-weight:600;border-radius:20px;padding:5px 9px;background:var(--info-bg);color:var(--info);display:inline-block}
+.mgmt-status.good{background:var(--success-bg);color:var(--success)}.mgmt-status.warn{background:var(--warning-bg);color:var(--warning)}.mgmt-status.bad{background:var(--danger-bg);color:var(--danger)}
+.mgmt-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px;background:#fff}
+.mgmt-table-wrap table{min-width:760px}.mgmt-table-wrap td,.mgmt-table-wrap th{font-size:13px;vertical-align:middle}
+.mgmt-table-wrap td .btn{padding:6px 10px;font-size:12px}
+.mgmt-empty{text-align:center;color:var(--text-muted);padding:36px 12px}
+.mgmt-hidden{display:none!important}
+@media(max-width:900px){.mgmt-main{padding:16px}.mgmt-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.mgmt-filters{grid-template-columns:1fr}}
+@media(max-width:560px){.mgmt-grid{grid-template-columns:1fr}.mgmt-actions .btn{flex:1}}
+@media print{.sidebar,.topbar,.mgmt-tabs,.mgmt-actions,.mgmt-filters{display:none!important}.mgmt-main{padding:0;max-width:none}.mgmt-panel{break-inside:avoid}}

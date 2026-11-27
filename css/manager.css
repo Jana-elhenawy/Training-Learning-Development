@@ -1,0 +1,93 @@
+
+/* Department Manager screens – aligned to the RMO Figma package */
+.manager-main{max-width:1440px}
+.manager-main .page-title{font:700 28px/36px Inter;margin:0 0 4px}
+.manager-main .subtitle{font:400 16px/24px Inter;color:var(--text-2)}
+.manager-main .manager-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.manager-main .manager-badges{display:flex;gap:8px;flex-wrap:wrap}
+.manager-main .filter-panel{display:flex;align-items:end;gap:14px;flex-wrap:wrap;background:#fff;border:1px solid var(--border);border-radius:8px;padding:16px}
+.manager-main .filter-field{display:flex;flex-direction:column;gap:6px;min-width:190px;flex:0 1 220px}
+.manager-main .filter-field label{font:500 12px/16px Inter;color:var(--text-2)}
+.manager-main .control{width:100%;height:42px;padding:0 12px;border:1px solid var(--brand);border-radius:8px;background:#fff;color:var(--text);font:500 14px Inter;min-width:0}
+.manager-main .filter-actions{display:flex;gap:8px;margin-left:auto}
+.manager-main .metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.manager-main .metric-grid.six{grid-template-columns:repeat(6,minmax(0,1fr))}
+.manager-main .metric-grid.five{grid-template-columns:repeat(5,minmax(0,1fr))}
+.manager-main .metric-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:16px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.manager-main .metric-label{font:500 13px/18px Inter;color:var(--text-2)}
+.manager-main .metric-value{font:700 30px/36px Inter;color:var(--text)}
+.manager-main .metric-note{font:400 12px/16px Inter;color:var(--text-muted)}
+.manager-main .section-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:16px;min-width:0}
+.manager-main .section-title{font:600 19px/26px Inter;margin-bottom:12px}
+.manager-main .insight-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.manager-main .insight{background:#f2f3f1;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.manager-main .insight strong{font:600 14px/20px Inter}
+.manager-main .table-wrap{width:100%;overflow-x:auto;border:1px solid var(--border);border-radius:8px;background:#fff}
+.manager-main table{width:100%;border-collapse:collapse;min-width:760px}
+.manager-main th{background:var(--surface-subtle);text-align:left;font:500 13px/18px Inter;color:var(--text-2);padding:12px 14px;white-space:nowrap}
+.manager-main td{border-top:1px solid var(--border-subtle);padding:12px 14px;font:400 14px/20px Inter;vertical-align:middle}
+.manager-main .person-name{font-weight:600}
+.manager-main .person-role{display:block;font-size:12px;color:var(--text-muted);margin-top:2px}
+.manager-main .status-pill{display:inline-flex;align-items:center;padding:4px 9px;border-radius:20px;font:500 12px/16px Inter;white-space:nowrap;background:var(--surface-subtle);color:var(--text-2)}
+.manager-main .status-pill.success{background:var(--success-bg);color:var(--success)}
+.manager-main .status-pill.warning{background:var(--warning-bg);color:var(--warning)}
+.manager-main .status-pill.danger{background:var(--danger-bg);color:var(--danger)}
+.manager-main .status-pill.info{background:var(--info-bg);color:var(--info)}
+.manager-main .btn{min-height:36px;white-space:nowrap}
+.manager-main .btn.small{padding:6px 12px;font-size:12px;min-height:32px}
+.manager-main .btn.green{background:var(--brand);color:#fff;border-color:var(--brand)}
+.manager-main .btn.green:hover{background:var(--brand-dark)}
+.manager-main .btn:disabled{opacity:.55;cursor:not-allowed}
+.manager-main .note-panel{background:var(--surface-subtle);border-radius:8px;padding:14px 16px;color:var(--text);font:400 14px/21px Inter}
+.manager-main .split-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.manager-main .progress-track{height:18px;background:var(--surface-subtle);border-radius:99px;overflow:hidden}
+.manager-main .progress-fill{height:100%;background:var(--brand);width:78%}
+.manager-main .legend-row{display:flex;justify-content:space-between;gap:12px;margin-top:12px;font-size:14px}
+.manager-main .catalog-toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.manager-main .catalog-search{width:100%;height:48px;border:1px solid var(--border);border-radius:6px;padding:0 16px;font:400 15px Inter}
+.manager-main .toggle-group{display:inline-flex;background:var(--surface-subtle);border-radius:7px;padding:3px;gap:3px}
+.manager-main .toggle-group button{border:0;border-radius:5px;padding:8px 22px;background:transparent;font:600 14px Inter;color:var(--text)}
+.manager-main .toggle-group button.active{background:var(--brand);color:#fff}
+.manager-main .catalog-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.manager-main .program-card{background:#e1e3de;border:1px solid #a3aa9b;border-radius:8px;padding:20px;box-shadow:0 2px 5px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:14px}
+.manager-main .program-card h3{font:600 21px/28px Inter;color:var(--brand-dark);min-height:54px}
+.manager-main .program-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px}
+.manager-main .program-meta b{font-size:15px;margin-left:8px}
+.manager-main .program-card .btn{width:100%;margin-top:auto;background:var(--sand);border-color:var(--sand);font-weight:600}
+.manager-main .category-tag{display:inline-flex;align-items:center;justify-content:center;min-width:90px;max-width:max-content;padding:8px 12px;border-radius:4px;background:#d9c3a6;font:600 11px/14px Inter;color:#252925}
+.manager-main .category-tag.gear{background:#edf0e9;border:1px solid #9eae9d;color:var(--brand-dark)}
+.manager-main .category-tag.navigation{background:var(--brand-dark);color:#fff}
+.manager-main .suggestion-list{display:flex;flex-direction:column;gap:12px}
+.manager-main .suggestion-card{display:grid;grid-template-columns:minmax(220px,1fr) minmax(360px,1.5fr) auto;gap:18px;align-items:center;background:#fff;border:1px solid var(--border);border-radius:8px;padding:16px}
+.manager-main .suggestion-card h3{font:600 18px/24px Inter;margin-bottom:5px}
+.manager-main .suggestion-card p{font:500 13px/19px Inter;color:var(--text-2)}
+.manager-main .reason-wrap{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.manager-main .form-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:20px;max-width:900px}
+.manager-main .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px}
+.manager-main .form-field{display:flex;flex-direction:column;gap:7px}
+.manager-main .form-field label{font:500 14px/20px Inter}
+.manager-main .form-field input,.manager-main .form-field select,.manager-main .form-field textarea{width:100%;border:1px solid var(--brand);border-radius:8px;padding:12px;font:400 14px/20px Inter;color:var(--text);background:#fff;min-height:48px}
+.manager-main .form-field textarea{min-height:110px;resize:vertical}
+.manager-main .rating-options{display:flex;gap:16px;flex-wrap:wrap;margin:16px 0 24px}
+.manager-main .rating-options label{display:flex;align-items:center;justify-content:center;width:72px;height:72px;border:1px solid var(--border);border-radius:8px;font:700 26px Inter;cursor:pointer}
+.manager-main .rating-options input{position:absolute;opacity:0}
+.manager-main .rating-options label:has(input:checked){background:var(--brand);border-color:var(--brand);color:#fff}
+.manager-main .review-row{display:grid;grid-template-columns:80px 1fr 1.5fr auto;gap:14px;align-items:center;background:#f2f3f1;border-radius:8px;padding:14px;margin-bottom:12px}
+.manager-main .review-row .muted{font-size:12px;color:var(--text-muted);margin-top:4px}
+.manager-main .pagination{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:12px}
+.manager-main .pagination button{min-width:42px}
+.manager-main .empty-state{text-align:center;padding:42px 20px;color:var(--text-2)}
+@media(max-width:1100px){
+ .manager-main .metric-grid.six,.manager-main .metric-grid.five{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .manager-main .catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .manager-main .suggestion-card{grid-template-columns:1fr;gap:12px}
+}
+@media(max-width:760px){
+ .manager-main .metric-grid,.manager-main .metric-grid.six,.manager-main .metric-grid.five,.manager-main .insight-grid,.manager-main .split-grid,.manager-main .form-grid{grid-template-columns:1fr}
+ .manager-main .catalog-grid{grid-template-columns:1fr}
+ .manager-main .filter-actions{margin-left:0;width:100%}
+ .manager-main .review-row{grid-template-columns:1fr}
+ .manager-main .rating-options label{width:54px;height:54px}
+}
+
+body[data-manager-page="program-catalog"] .manager-main .page-title{font-size:40px;line-height:48px;font-weight:400;color:var(--brand-dark)}
