@@ -53,7 +53,7 @@ const ROLES={
       rows:[[SESS[0][0],SESS[0][1],'12',B('In progress','warning'),'open'],[SESS[1][0],SESS[1][1],'8',B('Open','info'),'open'],[SESS[2][0],SESS[2][1],'15',B('Open','info'),'open']],grow:2},
      {t:'notes',unread:2,items:[['Assigned','info','You were assigned to Excel for Analysts','Today · 08:30'],['Action','warning','Attendance for Financial Reporting Basics needs recording','Yesterday · 17:05']]}]}]},
  ld:{label:'L&D Administrator',welcome:'Welcome, Hossam',sub:'L&D Administrator home',badges:[['Full access','info'],['L&D Administrator','neutral']],
-  nav:['Dashboard','Users','Program Catalog','Sessions','Enrollment Requests','Direct Enrollment','Results','Employee History','Reports','Audit and Security Log','System Settings','Notification'],
+  nav:['Dashboard','Users','Program Catalog','Sessions','Enrollment Requests','Direct Enrollment','Results','Employee History','Reports','Audit and Security Log','System Settings','Notification','Approvals','Training plan','Access and HR review'],
   shortcuts:['Enrollment Requests','Create Session','Create User','Direct Enrollment','Reports'],
   blocks:[
    {t:'kpis',title:'Pending Items',tag:'Needs action',cols:4,items:[['Pending requests','7'],['Pending over 3 days','2'],['Sessions needing a trainer','3'],['Locked accounts','1']]},
@@ -98,7 +98,7 @@ function show(key){
   try{sessionStorage.setItem('tms.role',key)}catch(_){}
   $('#role').value=key;
   $('#sidebar').innerHTML=logo+`<div class="role">${esc(r.label)}</div><div style="height:0"></div>`+
-    r.nav.map((n,i)=>`<button class="nav${i?'':' active'}" data-toast="${esc(n)} screen – to be built by the team">${esc(n)}</button>`).join('')+
+    r.nav.map((n,i)=>{const files={'Dashboard':'dashboard.html','Users':'users.html','Program Catalog':'program-catalog.html','Sessions':'sessions.html','Enrollment Requests':'enrollment-requests.html','Direct Enrollment':'direct-enrollment.html','Results':'results.html','Employee History':'employee-history.html','Reports':'reports.html','Audit and Security Log':'audit-security-log.html','System Settings':'system-settings.html','Notification':'notification.html','Approvals':'approvals.html','Training plan':'training-plan.html','Access and HR review':'access-hr-review.html'};return `<a class="nav${i?'':' active'}" href="${files[n]||'#'}">${esc(n)}</a>`}).join('')+
     `<div class="spacer"></div><button class="nav muted" data-href="change-password.html">Change password</button><button class="nav muted" id="logout">Log out</button>`;
   $('#main').innerHTML=`<div class="head"><div><h1>${esc(r.welcome)}</h1><p>${esc(r.sub)}</p></div><div class="badges">${r.badges.map(b=>B(b[0],b[1])).join('')}</div></div>
     <section class="card"><h2 style="font:600 20px/28px Inter">Shortcuts</h2><div class="shortcuts">${r.shortcuts.map((s,i)=>`<button class="btn${i?'':' primary'}" data-toast="${esc(s)} screen – to be built">${esc(s)}</button>`).join('')}</div></section>`+
