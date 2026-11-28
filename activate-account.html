@@ -6,16 +6,138 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 <style>
-.box.err{background:#ffeaea;border-color:var(--danger);color:var(--danger);padding:18px;min-height:110px}
-.auth-card.wide .field input[readonly]{background:#fff;color:var(--text)}
-.auth-card.wide.w3,.auth-card.wide.w4{margin-top:0}
-.auth-card.wide label{margin-top:2px}
-.auth-card.wide .note{font-size:20px;line-height:1.4;color:var(--brand-dark);margin:0 0 16px}
-#s-done .box,#s-expired .box{min-height:110px}
+  /* Full-bleed background image, no white corner */
+  .auth.activate { background: url('../assets/bg.png') center/cover no-repeat, linear-gradient(180deg,#e9b98a 0%,#b9a58f 28%,#6f7f6a 52%,#3d5648 75%,#2c4034 100%); }
+  .auth.activate .bg,
+  .auth.activate .ridge,
+  .auth.activate .corner { display:none; }
+
+  /* Logo */
+  .auth.activate .brand-top { top:44px; left:64px; }
+  .auth.activate .brand-top img { width: 280px; height:auto; }
+  .auth.activate .brand-top .wm { font-size:72px; }
+
+  /* Glassmorphic card */
+  .auth.activate .auth-card.wide {
+    width:760px;
+    max-width:calc(100% - 32px);
+    padding:36px 40px 32px;
+    border-radius:32px;
+    background: rgba(255,255,255,0.22);
+    border:1px solid rgba(255,255,255,0.35);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    margin: 0 auto;
+  }
+  .auth.activate .auth-card.wide.w3 { margin-top:0; }
+
+  .auth.activate .auth-card h2 {
+    font: 600 28px/1.3 "Source Sans 3", Inter, sans-serif;
+    color: var(--brand);
+    margin: 0 0 12px;
+  }
+  .auth.activate .auth-card p {
+    font: 400 16px/1.5 Inter;
+    color: var(--text);
+    margin: 0 0 16px;
+  }
+
+  .auth.activate label {
+    display: block;
+    font: 500 14px Inter;
+    color: var(--text);
+    margin: 0 0 6px;
+  }
+  .auth.activate .field { margin: 0 0 16px; }
+  .auth.activate .field input {
+    width: 100%;
+    height: 52px;
+    padding: 0 14px;
+    border: 1px solid var(--brand);
+    border-radius: 8px;
+    background: #fff;
+    font: 400 15px Inter;
+    color: var(--text);
+    outline: none;
+  }
+  .auth.activate .field input:focus { box-shadow: 0 0 0 3px rgba(42,93,52,.25); }
+  .auth.activate .field input[readonly] { background:#f7f7f5; color: var(--text-2); }
+
+  /* Password policy dashed box */
+  .auth.activate .box.dashed {
+    background: rgba(255,255,255,0.55);
+    border: 1.5px dashed var(--brand-dark);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font: 400 14px/1.5 Inter;
+    color: var(--text);
+    margin: 0 0 20px;
+  }
+  .auth.activate .box.dashed b { display:block; font-weight: 600; margin-bottom:6px; color: var(--brand-dark); }
+  .auth.activate .box.dashed ul { margin: 0; padding-left: 20px; }
+  .auth.activate .box.dashed ul li { margin: 2px 0; }
+
+  /* Error box */
+  .auth.activate .box.err {
+    background: #fde8e8;
+    border: 1.5px solid var(--danger);
+    border-radius: 10px;
+    padding: 20px 22px;
+    font: 400 16px/1.5 Inter;
+    color: var(--danger);
+    margin: 20px 0;
+  }
+
+  /* Success box */
+  .auth.activate .box.ok {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 22px;
+    font: 400 16px/1.5 Inter;
+    color: var(--text);
+    margin: 16px 0 20px;
+  }
+
+  .auth.activate .pill.primary {
+    width: 100%;
+    height: 52px;
+    border: 0;
+    border-radius: 26px;
+    background: var(--brand);
+    color: #fff;
+    font: 600 16px Inter;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  .auth.activate .pill.primary:hover { background: var(--brand-dark); }
+
+  .auth.activate .note {
+    font: 400 15px/1.5 Inter;
+    color: var(--brand-dark);
+    margin: 0 0 16px;
+  }
+
+  .auth.activate .auth-foot { position:absolute; left:0; right:0; bottom:0; z-index:2; display:flex; justify-content:space-between; padding:16px 45px; font:400 12px Inter; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.5); }
+  .auth.activate .auth-foot span { margin-left:16px; }
+
+  .auth.activate #s-done .pill.primary,
+  .auth.activate #s-expired .pill.primary {
+    width: 100%;
+    height: 52px;
+    margin-top: 12px;
+  }
+
+  @media (max-width:600px){
+    .auth.activate .auth-card.wide { padding: 24px 20px; border-radius: 20px; }
+    .auth.activate .brand-top { top: 20px; left: 20px; }
+    .auth.activate .brand-top img { width: 200px; }
+  }
 </style>
 </head>
 <body>
-<div class="auth">
+<div class="auth activate">
   <div class="bg"></div><div class="ridge"></div><div class="corner"></div>
   <div class="brand-top"><img src="assets/logo-color.png" alt="RMO" onerror="this.replaceWith(Object.assign(document.createElement('div'),{innerHTML:'<div class=wm>RMO</div><div class=sub>RIDGELINE MOUNTAIN OUTFITTERS</div>'}))"></div>
 

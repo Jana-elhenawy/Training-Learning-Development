@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – My Sessions</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/trainer.css">
+<style>
+  .tms-wrap { max-width:1180px; }
+  .tms-title { font:700 32px/1.2 Inter; color:var(--text); margin:0 0 6px; }
+  .tms-title::after { content:""; display:block; width:80px; height:3px; background:var(--sand); border-radius:2px; margin-top:8px; }
+  .tms-sub { font:400 15px Inter; color:var(--text-2); margin:6px 0 24px; }
+
+  .tms-filters { display:grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap:14px; align-items:end; margin-bottom:24px; }
+  .tms-field { display:flex; flex-direction:column; gap:6px; }
+  .tms-field label { font:500 13px Inter; color:var(--text); }
+  .tms-field .ctrl { height:46px; padding:0 14px; border:1px solid var(--border); border-radius:6px; background:#fff; font:400 15px Inter; color:var(--text); outline:none; }
+  .tms-field .ctrl:focus { border-color:var(--brand); box-shadow:0 0 0 3px rgba(42,93,52,.2); }
+  .tms-field .with-icon { position:relative; }
+  .tms-field .with-icon .ctrl { padding-right:40px; width:100%; }
+  .tms-field .with-icon .icon { position:absolute; right:12px; top:50%; transform:translateY(-50%); }
+  .tms-actions-inline { display:flex; gap:12px; align-items:center; }
+  .tms-actions-inline .btn-search { height:46px; padding:0 24px; background:var(--brand); color:#fff; border:0; border-radius:6px; font:600 14px Inter; cursor:pointer; }
+  .tms-actions-inline .btn-clear { background:none; border:0; color:var(--text); font:500 14px Inter; cursor:pointer; }
+  .tms-actions-inline .btn-clear:hover { text-decoration:underline; }
+
+  .tms-table-wrap { background:#fff; border:1px solid var(--border-subtle); border-radius:8px; overflow:hidden; margin-bottom:16px; }
+  .tms-table-wrap table { width:100%; border-collapse:collapse; min-width:1000px; }
+  .tms-table-wrap th { background:var(--surface-subtle); text-align:left; font:500 13px Inter; color:var(--text-2); padding:14px 18px; text-transform:capitalize; }
+  .tms-table-wrap td { padding:16px 18px; font:400 14px Inter; color:var(--text); border-top:1px solid var(--border-subtle); vertical-align:middle; }
+  .tms-table-wrap td .pill { display:inline-block; padding:4px 12px; border-radius:12px; font:500 12px Inter; }
+  .tms-table-wrap td .pill.green { background:var(--success-bg); color:var(--success); }
+  .tms-table-wrap td .pill.blue { background:#e3eefc; color:#1f3b63; }
+  .tms-table-wrap td .pill.amber { background:var(--warning-bg); color:var(--warning); }
+  .tms-table-wrap td .btn-open { background:var(--brand); color:#fff; border:0; border-radius:6px; padding:8px 18px; font:600 13px Inter; cursor:pointer; margin-right:8px; }
+  .tms-table-wrap td .btn-part { background:#fff; color:var(--brand); border:1px solid var(--brand); border-radius:6px; padding:8px 18px; font:600 13px Inter; cursor:pointer; }
+  .tms-count { font:400 14px Inter; color:var(--text-2); margin-top:8px; }
+
+  .tms-empty { background:#fff; border:1px solid var(--border-subtle); border-radius:8px; padding:80px 24px; text-align:center; }
+  .tms-empty .circle { width:96px; height:96px; border-radius:50%; background:var(--surface-subtle); margin:0 auto 20px; display:flex; align-items:center; justify-content:center; }
+  .tms-empty .circle .tri { width:0; height:0; border-left:22px solid transparent; border-right:22px solid transparent; border-bottom:32px solid var(--brand); }
+  .tms-empty h3 { font:700 22px Inter; color:var(--text); margin:0 0 10px; }
+  .tms-empty p { font:400 14px Inter; color:var(--text-2); margin:0; }
+
+  @media(max-width:1000px){
+    .tms-filters { grid-template-columns:1fr 1fr; }
+    .tms-actions-inline { grid-column:1/-1; }
+  }
+  @media(max-width:600px){ .tms-filters { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <div class="crumb">Workspace / My Sessions</div>
+      <div class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input placeholder="Search..."></div>
+      <button class="icon-btn" id="top-notifications" type="button" aria-label="Notifications">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+      </button>
+      <button class="icon-btn" id="top-profile" type="button" aria-label="Change password">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      </button>
+    </header>
+    <main class="trainer-main">
+      <div class="tms-wrap" id="tms"></div>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="js/trainer-shared.js"></script>
+<script>
+(function(){
+  TrainerUI.init('My Sessions');
+
+  const sessions = [
+    { id:'SES-2101', program:'Safety Fundamentals', dates:'03 Nov – 05 Nov 2026', location:'Room A', status:'Open', participants:12, statusCls:'green' },
+    { id:'SES-2102', program:'Data Privacy Basics', dates:'10 Nov – 12 Nov 2026', location:'Room B', status:'In Progress', participants:5, statusCls:'blue' },
+    { id:'SES-2103', program:'Excel for Analysts', dates:'17 Nov – 19 Nov 2026', location:'Lab 2', status:'Upcoming', participants:10, statusCls:'amber' },
+    { id:'SES-2104', program:'Customer Service Skills', dates:'20 Oct – 22 Oct 2026', location:'Room C', status:'Completed', participants:14, statusCls:'green' }
+  ];
+
+  const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const isEmpty = new URLSearchParams(location.search).get('state') === 'empty';
+  const visible = isEmpty ? [] : sessions;
+
+  function render(){
+    document.getElementById('tms').innerHTML = `
+      <h1 class="tms-title">My Sessions</h1>
+      <p class="tms-sub"></p>
+
+      <div class="tms-filters">
+        <div class="tms-field">
+          <label>Program or Session</label>
+          <div class="with-icon">
+            <input class="ctrl" id="f-search" type="search" placeholder="Search program or session ID">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#252925" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          </div>
+        </div>
+        <div class="tms-field">
+          <label>Status</label>
+          <select class="ctrl" id="f-status">
+            <option value="all">All statuses</option>
+            <option>Open</option><option>In Progress</option><option>Upcoming</option><option>Completed</option>
+          </select>
+        </div>
+        <div class="tms-field">
+          <label>Date from</label>
+          <div class="with-icon">
+            <input class="ctrl" id="f-from" type="date" placeholder="DD / MM / YYYY">
+          </div>
+        </div>
+        <div class="tms-field">
+          <label>Date to</label>
+          <div class="with-icon">
+            <input class="ctrl" id="f-to" type="date" placeholder="DD / MM / YYYY">
+          </div>
+        </div>
+        <div class="tms-actions-inline">
+          <button class="btn-search" type="button" id="apply">Search</button>
+          <button class="btn-clear" type="button" id="clear">Clear Filters</button>
+        </div>
+      </div>
+
+      ${visible.length === 0 ? `
+        <div class="tms-empty">
+          <div class="circle"><div class="tri"></div></div>
+          <h3>No sessions are assigned to you yet.</h3>
+          <p>Sessions appear here once the L&amp;D Administrator assigns you to a session.</p>
+        </div>
+      ` : `
+        <div class="tms-table-wrap">
+          <table>
+            <thead><tr><th>Session ID</th><th>Program</th><th>Date(s)</th><th>Location</th><th>Status</th><th>Participants</th><th>Actions</th></tr></thead>
+            <tbody>
+              ${visible.map(s => `
+                <tr data-id="${esc(s.id)}">
+                  <td>${esc(s.id)}</td>
+                  <td>${esc(s.program)}</td>
+                  <td>${esc(s.dates)}</td>
+                  <td>${esc(s.location)}</td>
+                  <td><span class="pill ${s.statusCls}">${esc(s.status)}</span></td>
+                  <td>${s.participants}</td>
+                  <td>
+                    <button class="btn-open" data-open="${esc(s.id)}">Open</button>
+                    <button class="btn-part" data-part="${esc(s.id)}">Participants</button>
+                  </td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+        <p class="tms-count">Showing ${visible.length} of ${sessions.length} assigned sessions</p>
+      `}
+    `;
+
+    document.getElementById('apply').addEventListener('click', () => TrainerUI.toast('Filters applied.'));
+    document.getElementById('clear').addEventListener('click', () => {
+      document.getElementById('f-search').value = '';
+      document.getElementById('f-status').value = 'all';
+      document.getElementById('f-from').value = '';
+      document.getElementById('f-to').value = '';
+      TrainerUI.toast('Filters cleared.');
+    });
+
+    document.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', () => {
+      sessionStorage.setItem('tms.trainer.session', b.dataset.open);
+      location.href = 'trainer-session-details.html';
+    }));
+    document.querySelectorAll('[data-part]').forEach(b => b.addEventListener('click', () => {
+      TrainerUI.toast('Participants list for ' + b.dataset.part + ' (prototype).');
+    }));
+  }
+
+  const tn = document.getElementById('top-notifications');
+  if (tn) tn.addEventListener('click', () => location.href = 'trainer-notifications.html');
+  const tp = document.getElementById('top-profile');
+  if (tp) tp.addEventListener('click', () => location.href = 'change-password.html');
+
+  render();
+})();
+</script>
+</body>
+</html>

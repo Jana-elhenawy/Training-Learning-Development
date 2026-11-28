@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Request Enrollment</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/trainer.css">
+<style>
+  .tre-wrap { max-width:1180px; }
+  .tre-title { font:600 30px/1.3 "Source Sans 3",Inter; color:var(--text); margin:0 0 6px; }
+  .tre-sub { font:400 15px/1.4 Inter; color:var(--text-2); margin:0 0 20px; }
+  .tre-info { background:var(--surface-subtle); padding:18px 22px; border-radius:6px; font:400 15px/1.55 Inter; color:var(--text); margin-bottom:28px; }
+  .tre-info div+div { margin-top:4px; }
+  .tre-h2 { font:600 24px/1.3 "Source Sans 3",Inter; color:var(--text); margin:0 0 14px; }
+  .tre-table { background:#fff; border-radius:6px; overflow:hidden; margin-bottom:24px; }
+  .tre-table table { width:100%; border-collapse:collapse; }
+  .tre-table th { background:var(--surface-subtle); text-align:left; font:500 14px Inter; color:var(--text); padding:16px 20px; }
+  .tre-table td { padding:22px 20px; font:400 15px Inter; color:var(--text); border-top:1px solid var(--border-subtle); }
+  .tre-note { background:var(--surface-subtle); padding:18px 22px; border-radius:6px; font:400 15px/1.55 Inter; color:var(--text); margin-bottom:24px; }
+  .tre-actions { display:flex; gap:12px; flex-wrap:wrap; }
+  .tre-btn-primary { background:var(--brand); color:#fff; border:0; padding:12px 22px; border-radius:6px; font:600 15px Inter; cursor:pointer; }
+  .tre-btn-primary:hover { background:var(--brand-dark); }
+  .tre-btn-secondary { background:#fff; color:var(--text); border:1px solid var(--border); padding:12px 22px; border-radius:6px; font:600 15px Inter; cursor:pointer; }
+  .tre-btn-secondary:hover { background:var(--bg); }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <div class="crumb">Workspace / Request Enrollment</div>
+      <div class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input placeholder="Search records..."></div>
+      <button class="icon-btn" id="top-notifications" type="button" aria-label="Notifications">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+      </button>
+      <button class="icon-btn" id="top-profile" type="button" aria-label="Change password">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      </button>
+    </header>
+    <main class="trainer-main">
+      <div class="tre-wrap" id="tre"></div>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="js/trainer-shared.js"></script>
+<script>
+(function(){
+  TrainerUI.init('Program Catalog');
+
+  const SESSION_NAME = 'Python Basics · Session S-101';
+  const info = {
+    open:['Open · 12 Nov 2026, 09:00–12:00 · Training Room A · Trainer: Dr. Ahmed','Capacity: 15 · Approved: 12 · Seats left: 3 · Deadline: 10 Nov 2026'],
+    full:['Full · 12 Nov 2026, 09:00–12:00 · Training Room A · Trainer: Dr. Ahmed','Capacity: 15 · Approved: 15 · Seats left: 0 · Deadline: 10 Nov 2026']
+  };
+
+  const base = [
+    ['Prerequisites','Met','Ready','Continue'],
+    ['Duplicate enrollment','None found','Ready','Continue'],
+    ['Schedule overlap','No conflict','Ready','Continue']
+  ];
+
+  const STATES = {
+    ready: {
+      title:'Request Enrollment', infoKey:'open',
+      rows: base,
+      note:'Submitting creates a Pending request for the L&D Administrator. A Pending request does not reserve a seat. Capacity and overlap are checked again on approval.',
+      primary:['Submit enrollment request','submit'],
+      secondary:['Back to program','trainer-program-details.html']
+    },
+    prereq: {
+      title:'Prerequisite Required', infoKey:'open',
+      rows:[ ['Prerequisites','Missing','Blocked','Complete prerequisite'], base[1], base[2] ],
+      note:'You must complete Introduction to Programming before requesting Python Basics. Your request has not been submitted.',
+      primary:['View prerequisite','trainer-program-details.html'],
+      secondary:['Back to program','trainer-program-details.html']
+    },
+    conflict: {
+      title:'Schedule Conflict', infoKey:'open',
+      rows:[ base[0], base[1], ['Schedule overlap','Overlap found','Warning','Review times'] ],
+      note:'Python Basics overlaps your approved Excel for Finance session on 12 Nov, 10:00–12:00. You may submit a Pending request, but approval will be blocked until the overlap is resolved.',
+      primary:['Submit with warning','submit'],
+      secondary:['Back to program','trainer-program-details.html']
+    },
+    waitlist: {
+      title:'Join Waitlist', infoKey:'full',
+      rows: base,
+      note:'Joining creates a Waitlisted request. If an Approved seat is freed before the deadline, the oldest request becomes Pending and awaits administrator approval. Waitlisted requests do not occupy seats.',
+      primary:['Join waitlist','waitlist'],
+      secondary:['Back to program','trainer-program-details.html']
+    },
+    submitted: {
+      title:'Request Submitted', infoKey:'open',
+      rows: base,
+      note:'Pending · Your Python Basics request was sent to the L&D Administrator. No seat is reserved until approval. Check My Training or your notifications for the decision.',
+      primary:['Go to My Training','trainer-my-training.html'],
+      secondary:['View notifications','trainer-notifications.html']
+    },
+    unavailable: {
+      title:'Enrollment Unavailable', infoKey:'open',
+      rows:[ base[0], ['Duplicate enrollment','Existing Pending request','Blocked','View My Training'], base[2] ],
+      note:'A duplicate request cannot be submitted. Requests and waitlist entry are also unavailable after the enrollment deadline or when the session is not Open / Full. A trainer cannot enroll in their own session.',
+      primary:['View existing request','trainer-my-training.html'],
+      secondary:['Back to program','trainer-program-details.html']
+    }
+  };
+
+  const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const qs = name => new URLSearchParams(location.search).get(name);
+
+  let key = qs('state') || 'ready';
+  if (!STATES[key]) key = 'ready';
+
+  function render(){
+    const st = STATES[key];
+    const infoRows = info[st.infoKey];
+    document.getElementById('tre').innerHTML = `
+      <h1 class="tre-title">${esc(st.title)}</h1>
+      <p class="tre-sub">${esc(SESSION_NAME)}</p>
+      <div class="tre-info"><div>${esc(infoRows[0])}</div><div>${esc(infoRows[1])}</div></div>
+      <h2 class="tre-h2">Review your eligibility</h2>
+      <div class="tre-table">
+        <table>
+          <thead><tr><th>Check</th><th>Result</th><th>Request status</th><th>Next action</th></tr></thead>
+          <tbody>${st.rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody>
+        </table>
+      </div>
+      <div class="tre-note">${esc(st.note)}</div>
+      <div class="tre-actions">
+        <button class="tre-btn-primary" type="button" id="primary" data-go="${esc(st.primary[1])}">${esc(st.primary[0])}</button>
+        <button class="tre-btn-secondary" type="button" id="secondary" data-go="${esc(st.secondary[1])}">${esc(st.secondary[0])}</button>
+      </div>
+    `;
+    document.title = 'TMS – ' + st.title;
+  }
+
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-go]'); if (!b) return;
+    const g = b.dataset.go;
+    if (g === 'submit') {
+      key = 'submitted';
+      history.replaceState(null, '', '?state=submitted');
+      render();
+      TrainerUI.toast('Enrollment request submitted. Status: Pending.');
+      window.scrollTo(0, 0);
+      return;
+    }
+    if (g === 'waitlist') {
+      key = 'submitted';
+      STATES.submitted.note = 'Waitlisted · You joined the waitlist for Python Basics. Waitlisted requests do not occupy seats. You will be notified if a seat is freed.';
+      history.replaceState(null, '', '?state=submitted');
+      render();
+      TrainerUI.toast('You joined the waitlist.');
+      window.scrollTo(0, 0);
+      return;
+    }
+    location.href = g;
+  });
+
+  const tn = document.getElementById('top-notifications');
+  if (tn) tn.addEventListener('click', () => location.href = 'trainer-notifications.html');
+  const tp = document.getElementById('top-profile');
+  if (tp) tp.addEventListener('click', () => location.href = 'change-password.html');
+
+  render();
+})();
+</script>
+</body>
+</html>

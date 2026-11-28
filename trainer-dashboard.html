@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Trainer Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/trainer.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <div class="crumb" id="crumb">Workspace / Dashboard</div>
+      <div class="search">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" placeholder="Search." aria-label="Search">
+      </div>
+      <button class="icon-btn" type="button" aria-label="Notifications" onclick="location.href='notification.html'">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+      </button>
+      <button class="icon-btn" type="button" aria-label="Profile" onclick="location.href='change-password.html'">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      </button>
+    </header>
+    
+    <main class="trainer-main">
+      <!-- Head -->
+      <div class="head" style="margin-bottom:24px; align-items:flex-start;">
+        <div>
+          <h1 class="page-title" style="font-size:30px; font-weight:700; color:var(--text); margin-bottom:4px;">Welcome, Dr. Khaled</h1>
+          <p class="subtitle" style="color:var(--text-2);">Trainer home</p>
+        </div>
+        <div class="badges" style="display:flex; gap:8px; margin-top:8px;">
+          <span class="badge b-info" style="background:var(--info-bg); color:var(--info); padding:4px 8px; border-radius:12px; font-size:12px;">Trainer view</span>
+          <span class="badge b-neutral" style="background:var(--surface-subtle); color:var(--text-2); padding:4px 8px; border-radius:12px; font-size:12px;">Assigned sessions only</span>
+        </div>
+      </div>
+
+      <!-- Shortcuts -->
+      <section class="card" style="background:#fff; border:1px solid var(--border); border-radius:8px; padding:16px; margin-bottom:20px;">
+        <h2 style="font:600 20px/28px Inter; margin-bottom:12px;">Shortcuts</h2>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <a href="trainer-my-sessions.html" class="btn primary" style="background:var(--brand); color:#fff; border:none; padding:8px 16px; border-radius:8px; font:500 14px Inter; text-decoration:none;">My Sessions</a>
+          <a href="notification.html" class="btn" style="background:#fff; border:1px solid var(--border); padding:8px 16px; border-radius:8px; font:500 14px Inter; text-decoration:none; color:var(--text);">Notification</a>
+          <a href="trainer-program-catalog.html" class="btn" style="background:#fff; border:1px solid var(--border); padding:8px 16px; border-radius:8px; font:500 14px Inter; text-decoration:none; color:var(--text);">Program Catalog</a>
+        </div>
+      </section>
+
+      <!-- Pending Items -->
+      <section class="card" style="background:#fff; border:1px solid var(--border); border-radius:8px; padding:16px; margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <h2 style="font:600 20px/28px Inter; margin:0;">Pending Items</h2>
+          <span class="badge b-neutral" style="background:var(--surface-subtle); color:var(--text-2); padding:4px 8px; border-radius:12px; font-size:12px;">Needs action</span>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+          <div style="border:1px solid var(--border-subtle); border-radius:8px; padding:16px;">
+            <span style="font:400 14px Inter; color:var(--text-2); display:block; margin-bottom:8px;">Sessions to record</span>
+            <strong style="font:700 32px Inter; color:var(--text); display:block;">3</strong>
+            <span style="font:400 12px Inter; color:var(--text-muted);">attendance</span>
+          </div>
+          <div style="border:1px solid var(--border-subtle); border-radius:8px; padding:16px;">
+            <span style="font:400 14px Inter; color:var(--text-2); display:block; margin-bottom:8px;">Sessions to finalize</span>
+            <strong style="font:700 32px Inter; color:var(--text); display:block;">2</strong>
+            <span style="font:400 12px Inter; color:var(--text-muted);">results</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Grid: Upcoming Sessions + Notifications -->
+      <div style="display:grid; grid-template-columns: 1fr 350px; gap:20px; align-items:start;">
+        
+        <!-- Upcoming Sessions Table -->
+        <section class="card" style="background:#fff; border:1px solid var(--border); border-radius:8px; padding:0; overflow:hidden;">
+          <div style="padding:16px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-subtle);">
+            <h2 style="font:600 20px/28px Inter; margin:0;">Upcoming Sessions</h2>
+            <span style="font:400 12px Inter; color:var(--text-muted);">Showing 1–3 of 3</span>
+          </div>
+          <table style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="background:var(--surface-subtle); text-align:left;">
+                <th style="padding:12px 16px; font:500 13px Inter; color:var(--text-2);">Program</th>
+                <th style="padding:12px 16px; font:500 13px Inter; color:var(--text-2);">Date</th>
+                <th style="padding:12px 16px; font:500 13px Inter; color:var(--text-2);">Participants</th>
+                <th style="padding:12px 16px; font:500 13px Inter; color:var(--text-2);">Status</th>
+                <th style="padding:12px 16px; font:500 13px Inter; color:var(--text-2);">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:14px 16px; font:400 14px Inter; color:var(--text);">Financial Reporting Basics</td>
+                <td style="padding:14px 16px; font:400 14px Inter; color:var(--text);">12/11/2026</td>
+                <td style="padding:14px 16px; font:400 14px Inter; color:var(--text);">12</td>
+                <td style="padding:14px 16px;"><span class="status-pill warning" style="background:var(--warning-bg); color:var(--warning); padding:4px 8px; border-radius:12px; font-size:12px;">In progress</span></td>
+                <td style="padding:14px 16px;"><button class="btn outline small" style="padding:6px 12px; font-size:12px;" onclick="location.href='trainer-session-details.html'">open</button></td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:14px 16px; font:400 14px Inter; color:var(--text);">Excel for Analysts</td>
+                <td style="padding:14px 16px; font:400 14px Inter; color:var(--text);">19/11/2026</td>
+                <td style="padding:14px 16px; font:400 14px Inter; color:var(--text);">8</td>
+                <td style="padding:14px 16px;"><span class="status-pill info" style="background:var(--info-bg); color:var(--info); padding:4px 8px; border-radius:12px; font-size:12px;">Open</span></td>
+                <td style="padding:14px 16px;"><button class="btn outline small" style="padding:6px 12px; font-size:12px;" onclick="location.href='trainer-session-details.html'">open</button></td>
+              </tr>
+              <tr>
+                <td style="padding:14px 16px; font:400 14px Inter; color:var(--text);">Workplace Safety</td>
+                <td style="padding:14px 16px; font:400 14px Inter; color:var(--text);">26/11/2026</td>
+                <td style="padding:14px 16px; font:400 14px Inter; color:var(--text);">15</td>
+                <td style="padding:14px 16px;"><span class="status-pill info" style="background:var(--info-bg); color:var(--info); padding:4px 8px; border-radius:12px; font-size:12px;">Open</span></td>
+                <td style="padding:14px 16px;"><button class="btn outline small" style="padding:6px 12px; font-size:12px;" onclick="location.href='trainer-session-details.html'">open</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Recent Notifications -->
+        <section class="card" style="background:#fff; border:1px solid var(--border); border-radius:8px; padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h2 style="font:600 20px/28px Inter; margin:0;">Recent Notification</h2>
+            <span class="badge b-danger" style="background:var(--danger-bg); color:var(--danger); padding:4px 8px; border-radius:12px; font-size:12px;">2 unread</span>
+          </div>
+          
+          <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:16px;">
+            <div style="background:var(--bg); padding:12px; border-radius:8px; display:flex; gap:12px; align-items:flex-start;">
+              <span class="badge b-neutral" style="background:var(--surface-subtle); color:var(--text-2); padding:2px 6px; border-radius:4px; font-size:10px; white-space:nowrap;">Assigned</span>
+              <div>
+                <p style="font:500 13px Inter; margin:0 0 4px;">You were assigned to Excel for Analysts</p>
+                <span style="font:400 12px Inter; color:var(--text-muted);">Today · 08:30</span>
+              </div>
+            </div>
+            <div style="background:var(--bg); padding:12px; border-radius:8px; display:flex; gap:12px; align-items:flex-start;">
+              <span class="badge b-warning" style="background:var(--warning-bg); color:var(--warning); padding:2px 6px; border-radius:4px; font-size:10px; white-space:nowrap;">Action</span>
+              <div>
+                <p style="font:500 13px Inter; margin:0 0 4px;">Attendance for Financial Reporting Basics needs recording</p>
+                <span style="font:400 12px Inter; color:var(--text-muted);">Yesterday · 17:05</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn" style="width:100%; background:#fff; border:1px solid var(--border); padding:10px; border-radius:8px; font:500 14px Inter; cursor:pointer;" onclick="location.href='notification.html'">View all notifications</button>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="js/trainer-shared.js"></script>
+<script>
+  // Initialize the sidebar for Trainer
+  TrainerUI.init('Dashboard');
+</script>
+</body>
+</html>

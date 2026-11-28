@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Session Details</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/trainer.css">
+<style>
+  .tsd-wrap { max-width:1180px; }
+  .tsd-crumb { font:400 13px Inter; color:var(--text-2); margin:0 0 8px; }
+  .tsd-head { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:24px; }
+  .tsd-head h1 { font:700 32px/1.2 Inter; color:var(--text); margin:0; }
+  .tsd-head h1::after { content:""; display:block; width:80px; height:3px; background:var(--sand); border-radius:2px; margin-top:8px; }
+  .tsd-head .pill { display:inline-block; padding:4px 14px; border-radius:14px; font:500 13px Inter; background:#e3eefc; color:#1f3b63; }
+
+  .tsd-facts { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; margin-bottom:28px; }
+  .tsd-fact { background:#fff; border:1px solid var(--border-subtle); border-radius:8px; padding:18px; display:flex; flex-direction:column; gap:6px; }
+  .tsd-fact span { font:500 12px Inter; letter-spacing:.4px; color:var(--text-2); text-transform:uppercase; }
+  .tsd-fact strong { font:700 18px Inter; color:var(--text); }
+
+  .tsd-h2 { font:700 22px Inter; color:var(--text); margin:0 0 14px; }
+
+  .tsd-table-wrap { background:#fff; border:1px solid var(--border-subtle); border-radius:8px; overflow:hidden; margin-bottom:10px; }
+  .tsd-table-wrap table { width:100%; border-collapse:collapse; min-width:800px; }
+  .tsd-table-wrap th { background:var(--surface-subtle); text-align:left; font:500 13px Inter; color:var(--text-2); padding:14px 18px; }
+  .tsd-table-wrap td { padding:16px 18px; font:400 14px Inter; color:var(--text); border-top:1px solid var(--border-subtle); vertical-align:middle; }
+  .tsd-table-wrap td .pill-green { display:inline-block; padding:4px 12px; border-radius:12px; background:var(--success-bg); color:var(--success); font:500 12px Inter; }
+  .tsd-note { font:400 12px Inter; color:var(--text-2); margin:0 0 24px; }
+
+  .tsd-actions { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  .tsd-actions .btn-primary { background:var(--brand); color:#fff; border:0; padding:12px 24px; border-radius:6px; font:600 15px Inter; cursor:pointer; }
+  .tsd-actions .btn-primary:hover { background:var(--brand-dark); }
+  .tsd-actions .btn-outline { background:#fff; color:var(--text); border:1px solid var(--border); padding:12px 24px; border-radius:6px; font:600 15px Inter; cursor:pointer; }
+  .tsd-actions .btn-outline:hover { background:var(--bg); }
+  .tsd-actions .link { margin-left:8px; color:var(--text); font:500 14px Inter; text-decoration:none; }
+  .tsd-actions .link:hover { text-decoration:underline; }
+
+  @media(max-width:900px){ .tsd-facts { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media(max-width:560px){ .tsd-facts { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <div class="crumb">Workspace / My Sessions</div>
+      <div class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input placeholder="Search..."></div>
+      <button class="icon-btn" id="top-notifications" type="button" aria-label="Notifications">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+      </button>
+      <button class="icon-btn" id="top-profile" type="button" aria-label="Change password">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      </button>
+    </header>
+    <main class="trainer-main">
+      <div class="tsd-wrap" id="tsd"></div>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="js/trainer-shared.js"></script>
+<script>
+(function(){
+  TrainerUI.init('My Sessions');
+
+  const sessionsData = {
+    'SES-2102': {
+      title:'Data Privacy Basics', status:'In Progress', statusCls:'blue',
+      facts:[['Session ID','SES-2102'],['Dates','10 Nov – 12 Nov 2026'],['Location','Room B'],['Participants','5']],
+      participants:[
+        ['E-1024','Roaa Abdelfatah','L&D'],
+        ['E-1025','Jana','Finance'],
+        ['E-1026','Shrouk','Operations'],
+        ['E-1027','Mazen','IT'],
+        ['E-1028','Nour Hassan','HR']
+      ]
+    },
+    'SES-2101': {
+      title:'Safety Fundamentals', status:'Open', statusCls:'green',
+      facts:[['Session ID','SES-2101'],['Dates','03 Nov – 05 Nov 2026'],['Location','Room A'],['Participants','12']],
+      participants:[]
+    },
+    'SES-2103': {
+      title:'Excel for Analysts', status:'Upcoming', statusCls:'amber',
+      facts:[['Session ID','SES-2103'],['Dates','17 Nov – 19 Nov 2026'],['Location','Lab 2'],['Participants','10']],
+      participants:[]
+    },
+    'SES-2104': {
+      title:'Customer Service Skills', status:'Completed', statusCls:'green',
+      facts:[['Session ID','SES-2104'],['Dates','20 Oct – 22 Oct 2026'],['Location','Room C'],['Participants','14']],
+      participants:[]
+    }
+  };
+
+  const sessionKey = sessionStorage.getItem('tms.trainer.session') || 'SES-2102';
+  const data = sessionsData[sessionKey] || sessionsData['SES-2102'];
+  const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  document.getElementById('tsd').innerHTML = `
+    <p class="tsd-crumb">My Sessions / ${esc(sessionKey)}</p>
+    <div class="tsd-head">
+      <h1>${esc(data.title)}</h1>
+      <span class="pill">${esc(data.status)}</span>
+    </div>
+
+    <div class="tsd-facts">
+      ${data.facts.map(f => `<div class="tsd-fact"><span>${esc(f[0])}</span><strong>${esc(f[1])}</strong></div>`).join('')}
+    </div>
+
+    <h2 class="tsd-h2">Participants</h2>
+    <div class="tsd-table-wrap">
+      <table>
+        <thead><tr><th>Employee No.</th><th>Full Name</th><th>Department</th><th>Enrollment status</th></tr></thead>
+        <tbody>
+          ${data.participants.length === 0
+            ? `<tr><td colspan="4" style="text-align:center;color:var(--text-2);padding:32px;">No participants listed.</td></tr>`
+            : data.participants.map(p => `
+                <tr>
+                  <td>${esc(p[0])}</td>
+                  <td>${esc(p[1])}</td>
+                  <td>${esc(p[2])}</td>
+                  <td><span class="pill-green">Approved</span></td>
+                </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <p class="tsd-note">Only participants with an Approved enrollment are listed.</p>
+
+    <div class="tsd-actions">
+      <button class="btn-primary" type="button" id="rec-att">Record Attendance</button>
+      <button class="btn-outline" type="button" id="enter-res">Enter Results</button>
+      <a class="link" href="trainer-my-sessions.html">Back to My Sessions</a>
+    </div>
+  `;
+
+  document.getElementById('rec-att').addEventListener('click', () => location.href = 'trainer-attendance.html');
+  document.getElementById('enter-res').addEventListener('click', () => location.href = 'trainer-results.html?state=preliminary-score');
+
+  const tn = document.getElementById('top-notifications');
+  if (tn) tn.addEventListener('click', () => location.href = 'trainer-notifications.html');
+  const tp = document.getElementById('top-profile');
+  if (tp) tp.addEventListener('click', () => location.href = 'change-password.html');
+})();
+</script>
+</body>
+</html>

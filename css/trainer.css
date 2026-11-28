@@ -1,0 +1,30 @@
+.trainer-main { max-width: 1440px; }
+.trainer-main .page-title { font: 700 28px/36px Inter; margin: 0 0 4px; }
+.trainer-main .subtitle { font: 400 16px/24px Inter; color: var(--text-2); }
+.trainer-main .filter-panel { display: flex; align-items: end; gap: 14px; flex-wrap: wrap; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+.trainer-main .filter-field { display: flex; flex-direction: column; gap: 6px; min-width: 190px; flex: 1 1 220px; }
+.trainer-main .filter-field label { font: 500 12px/16px Inter; color: var(--text-2); }
+.trainer-main .control { width: 100%; height: 42px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--text); font: 500 14px Inter; }
+.trainer-main .table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
+.trainer-main table { width: 100%; border-collapse: collapse; min-width: 800px; }
+.trainer-main th { background: var(--surface-subtle); text-align: left; font: 500 13px/18px Inter; color: var(--text-2); padding: 12px 14px; white-space: nowrap; }
+.trainer-main td { border-top: 1px solid var(--border-subtle); padding: 12px 14px; font: 400 14px/20px Inter; vertical-align: middle; }
+.trainer-main .status-pill { display: inline-flex; align-items: center; padding: 4px 9px; border-radius: 20px; font: 500 12px/16px Inter; white-space: nowrap; background: var(--surface-subtle); color: var(--text-2); }
+.trainer-main .status-pill.success { background: var(--success-bg); color: var(--success); }
+.trainer-main .status-pill.warning { background: var(--warning-bg); color: var(--warning); }
+.trainer-main .status-pill.danger { background: var(--danger-bg); color: var(--danger); }
+.trainer-main .status-pill.info { background: var(--info-bg); color: var(--info); }
+.trainer-main .btn { min-height: 36px; white-space: nowrap; }
+.trainer-main .btn.green { background: var(--brand); color: #fff; border-color: var(--brand); }
+.trainer-main .btn.green:hover { background: var(--brand-dark); }
+.trainer-main .btn.outline { border-color: var(--brand); color: var(--brand); }
+.trainer-main .btn.outline:hover { background: var(--success-bg); }
+
+/* Attendance Sheet */
+.attendance-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+.attendance-tabs button { padding: 10px 24px; border-radius: 20px; border: 1px solid var(--border); background: #fff; font: 600 14px Inter; cursor: pointer; }
+.attendance-tabs button.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+.att-table input[type="radio"] { width: 20px; height: 20px; accent-color: var(--brand); cursor: pointer; }
+.att-table td.missing { background: #fdf1f0; }
+.att-summary { margin-top: 16px; font: 600 16px Inter; }
+.att-actions { display: flex; gap: 12px; margin-top: 24px; }

@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Attendance Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/trainer.css">
+<style>
+  .ta-wrap { max-width:1180px; }
+  .ta-head { margin:0 0 24px; }
+  .ta-head h1 { font:700 30px/1.2 Inter; color:var(--text); margin:0 0 8px; }
+  .ta-head p { font:400 15px Inter; color:var(--text-2); margin:0; }
+  .ta-section-label { font:500 15px Inter; color:var(--text); margin:16px 0 12px; }
+
+  .ta-days { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:24px; }
+  .ta-days button { padding:12px 28px; border-radius:28px; font:600 15px Inter; cursor:pointer; border:1px solid var(--border); background:#fff; color:var(--text); }
+  .ta-days button.active { background:var(--brand); color:#fff; border-color:var(--brand); }
+  .ta-days button:hover:not(.active) { background:var(--bg); }
+
+  .ta-error-banner { background:var(--danger-bg); border:1px solid var(--danger); color:var(--danger); padding:16px 20px; border-radius:8px; font:400 15px/1.5 Inter; margin-bottom:16px; }
+
+  .ta-hint { font:400 15px Inter; color:var(--text); margin:0 0 12px; }
+
+  .ta-table-wrap { background:#fff; border:1px solid var(--border-subtle); border-radius:8px; overflow:hidden; margin-bottom:20px; }
+  .ta-table-wrap table { width:100%; border-collapse:collapse; }
+  .ta-table-wrap th { background:var(--surface-subtle); text-align:left; font:500 13px Inter; color:var(--text-2); padding:14px 18px; }
+  .ta-table-wrap td { padding:16px 18px; font:400 14px Inter; color:var(--text); border-top:1px solid var(--border-subtle); vertical-align:middle; }
+  .ta-table-wrap tr.row-missing td { background:#fdf1f0; }
+  .ta-table-wrap .radio-cell { text-align:center; }
+
+  /* Custom radio — thick green circle when checked */
+  .ta-radio { position:relative; display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; cursor:pointer; }
+  .ta-radio input { position:absolute; opacity:0; width:100%; height:100%; margin:0; cursor:pointer; }
+  .ta-radio span { width:24px; height:24px; border:2px solid var(--border); border-radius:50%; background:#fff; display:inline-block; transition:.15s; }
+  .ta-radio input:checked + span { background:var(--brand); border-color:var(--brand); box-shadow:0 0 0 4px rgba(42,93,52,.15); }
+  .ta-radio input:focus-visible + span { outline:3px solid rgba(42,93,52,.3); outline-offset:2px; }
+
+  .ta-summary { font:600 16px Inter; color:var(--text); margin-bottom:20px; }
+
+  .ta-actions { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:24px; }
+  .ta-actions button { padding:14px 32px; border-radius:28px; font:600 15px Inter; cursor:pointer; border:1px solid transparent; min-width:180px; }
+  .ta-actions .primary { background:var(--brand); color:#fff; }
+  .ta-actions .primary:hover { background:var(--brand-dark); }
+  .ta-actions .outline { background:#fff; color:var(--text); border-color:var(--border); }
+  .ta-actions .outline:hover { background:var(--bg); }
+
+  /* Excused flow — additional rows */
+  .ta-excused-box { background:#f6efdd; border-radius:6px; padding:16px 20px; font:400 14px Inter; color:var(--warning); margin-bottom:16px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  .ta-excused-box .reason-input { flex:1; min-width:240px; height:40px; padding:0 12px; border:1px solid var(--border); border-radius:6px; font:400 14px Inter; }
+  .ta-attach { background:#fff; border:1px solid var(--border-subtle); border-radius:6px; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px; }
+  .ta-attach span { font:400 14px Inter; color:var(--text); }
+  .ta-attach button { background:var(--brand); color:#fff; border:0; padding:10px 20px; border-radius:6px; font:600 13px Inter; cursor:pointer; }
+  .ta-attach button:hover { background:var(--brand-dark); }
+
+  .ta-waiting { display:inline-block; padding:4px 12px; border-radius:12px; background:#f6efdd; color:var(--warning); font:500 12px Inter; }
+
+  @media(max-width:700px){
+    .ta-days button { flex:1; min-width:120px; padding:10px 12px; font-size:13px; }
+    .ta-table-wrap { overflow-x:auto; }
+    .ta-table-wrap table { min-width:720px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <div class="crumb">Workspace / Attendance</div>
+      <div class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input placeholder="Search..."></div>
+      <button class="icon-btn" id="top-notifications" type="button" aria-label="Notifications">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+      </button>
+      <button class="icon-btn" id="top-profile" type="button" aria-label="Change password">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      </button>
+    </header>
+    <main class="trainer-main">
+      <div class="ta-wrap" id="ta"></div>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="js/trainer-shared.js"></script>
+<script>
+(function(){
+  TrainerUI.init('My Sessions');
+
+  const participants = [
+    { id:'E-1024', name:'Roaa Abdelfatah', status:'' },
+    { id:'E-1025', name:'Jana',           status:'' },
+    { id:'E-1026', name:'Shrouk',         status:'' },
+    { id:'E-1027', name:'Mazen',          status:'' },
+    { id:'E-1028', name:'Nour Hassan',    status:'' }
+  ];
+
+  const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const qs = name => new URLSearchParams(location.search).get(name);
+  const state = qs('state') || '';
+
+  // Pre-fill sample data per state
+  if (state === 'partial') {
+    participants[0].status = 'Present';
+    participants[2].status = 'Late';
+    participants[4].status = 'Present';
+  }
+  if (state === 'excused') {
+    participants[0].status = 'Present';
+    participants[1].status = 'Late';
+    participants[2].status = 'Excused';
+    participants[3].status = 'Absent';
+    participants[4].status = 'Present';
+  }
+
+  let activeDay = 1;
+  let showError = (state === 'partial');
+
+  function render(){
+    const markedCount = participants.filter(p => p.status).length;
+    const missingCount = participants.length - markedCount;
+    const counts = { Present:0, Absent:0, Late:0, Excused:0 };
+    participants.forEach(p => { if (p.status) counts[p.status]++; });
+
+    const excusedRow = participants.find(p => p.status === 'Excused');
+
+    document.getElementById('ta').innerHTML = `
+      <div class="ta-head">
+        <h1>Attendance Sheet</h1>
+        <p>Session: SES-2102 | Data Privacy Basics | Room B</p>
+      </div>
+
+      <div class="ta-section-label">Session Date</div>
+      <div class="ta-days">
+        <button class="${activeDay===1?'active':''}" data-day="1">Day 1 – 04/11/2026</button>
+        <button class="${activeDay===2?'active':''}" data-day="2">Day 2 – 06/11/2026</button>
+        <button class="${activeDay===3?'active':''}" data-day="3">Day 3 – 08/11/2026</button>
+      </div>
+
+      ${showError && missingCount > 0 ? `
+        <div class="ta-error-banner">Attendance is missing for ${missingCount} participant${missingCount>1?'s':''}. Mark every participant as Present, Absent, Late or Excused before saving.</div>
+      ` : ''}
+
+      <p class="ta-hint">Select one status per participant: Present, Absent, Late or Excused.</p>
+
+      <div class="ta-table-wrap">
+        <table>
+          <thead><tr><th>Employee No.</th><th>Full Name</th><th style="text-align:center">Present</th><th style="text-align:center">Absent</th><th style="text-align:center">Late</th><th style="text-align:center">Excused</th></tr></thead>
+          <tbody>
+            ${participants.map(p => `
+              <tr data-id="${esc(p.id)}" class="${!p.status && showError ? 'row-missing' : ''}">
+                <td>${esc(p.id)}</td>
+                <td>${esc(p.name)}</td>
+                ${['Present','Absent','Late','Excused'].map(opt => `
+                  <td class="radio-cell">
+                    <label class="ta-radio">
+                      <input type="radio" name="att-${esc(p.id)}" value="${opt}" ${p.status===opt?'checked':''}>
+                      <span></span>
+                    </label>
+                  </td>
+                `).join('')}
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ta-summary">
+        ${state === 'excused'
+          ? `Marked: ${markedCount} of ${participants.length} | Present: ${counts.Present} Absent: ${counts.Absent} Late: ${counts.Late} Excused: ${counts.Excused}`
+          : showError && missingCount > 0
+            ? `Marked: ${markedCount} of ${participants.length} | ${missingCount} participant${missingCount>1?'s':''} need${missingCount>1?'':''} an attendance status`
+            : `Marked: ${markedCount} of ${participants.length} | Present: ${counts.Present} Absent: ${counts.Absent} Late: ${counts.Late} Excused: ${counts.Excused}`
+        }
+      </div>
+
+      ${excusedRow ? `
+        <div class="ta-excused-box">
+          <span>Excused reason required · Waiting for administrator approval</span>
+          <input class="reason-input" type="text" placeholder="Enter reason for Excused">
+        </div>
+        <div class="ta-attach">
+          <span>Signed attendance sheet · attendance-12-nov.pdf</span>
+          <button type="button" id="attach-btn">Attach / replace</button>
+        </div>
+      ` : ''}
+
+      <div class="ta-actions">
+        <button class="primary" type="button" id="save">Save Attendance</button>
+        <button class="outline" type="button" id="cancel">Cancel</button>
+      </div>
+    `;
+
+    // Day selector
+    document.querySelectorAll('[data-day]').forEach(b => b.addEventListener('click', () => {
+      activeDay = Number(b.dataset.day);
+      render();
+    }));
+
+    // Radios
+    document.querySelectorAll('.ta-radio input').forEach(inp => {
+      inp.addEventListener('change', () => {
+        const id = inp.name.replace('att-', '');
+        const p = participants.find(x => x.id === id);
+        if (p) p.status = inp.value;
+        if (showError && participants.every(x => x.status)) showError = false;
+        render();
+      });
+    });
+
+    document.getElementById('save').addEventListener('click', () => {
+      const missing = participants.filter(p => !p.status).length;
+      if (missing > 0) {
+        showError = true;
+        render();
+        TrainerUI.toast('Mark every participant before saving.');
+        return;
+      }
+      const excused = participants.find(p => p.status === 'Excused');
+      if (excused) {
+        TrainerUI.toast('Attendance saved. Excused requires administrator approval.');
+      } else {
+        TrainerUI.toast('Attendance saved successfully.');
+      }
+      setTimeout(() => location.href = 'trainer-session-details.html', 800);
+    });
+
+    document.getElementById('cancel').addEventListener('click', () => location.href = 'trainer-session-details.html');
+
+    const attach = document.getElementById('attach-btn');
+    if (attach) attach.addEventListener('click', () => TrainerUI.toast('Attach / replace file (prototype).'));
+  }
+
+  const tn = document.getElementById('top-notifications');
+  if (tn) tn.addEventListener('click', () => location.href = 'trainer-notifications.html');
+  const tp = document.getElementById('top-profile');
+  if (tp) tp.addEventListener('click', () => location.href = 'change-password.html');
+
+  render();
+})();
+</script>
+</body>
+</html>

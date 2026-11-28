@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – My Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/trainer.css">
+<style>
+  .tmt-wrap { max-width:1180px; }
+  .tmt-h1 { font:700 30px/1.2 Inter; color:var(--text); margin:0 0 8px; }
+  .tmt-sub { font:400 15px Inter; color:var(--text-2); margin:0 0 24px; }
+
+  .tmt-table-wrap { background:#fff; border:1px solid var(--border-subtle); border-radius:8px; overflow:hidden; margin-bottom:20px; }
+  .tmt-table-wrap table { width:100%; border-collapse:collapse; min-width:900px; }
+  .tmt-table-wrap th { background:var(--surface-subtle); text-align:left; font:500 13px Inter; color:var(--text-2); padding:14px 18px; }
+  .tmt-table-wrap td { padding:18px; font:400 14px Inter; color:var(--text); border-top:1px solid var(--border-subtle); vertical-align:middle; }
+  .tmt-table-wrap .link-btn { background:none; border:0; color:var(--text); font:400 14px Inter; cursor:pointer; padding:0; text-decoration:none; }
+  .tmt-table-wrap .link-btn:hover { text-decoration:underline; }
+
+  .tmt-banner { background:var(--surface-subtle); padding:16px 20px; border-radius:6px; font:400 14px/1.5 Inter; color:var(--text); margin-bottom:20px; }
+  .tmt-banner.info { background:#e3eefc; color:#1f3b63; }
+  .tmt-banner.success { background:var(--success-bg); color:var(--success); }
+
+  .tmt-form { margin-bottom:24px; }
+  .tmt-form label { display:block; font:500 13px Inter; color:var(--text-2); margin-bottom:6px; }
+  .tmt-form input { width:100%; max-width:420px; height:44px; padding:0 12px; border:1px solid var(--border); border-radius:6px; font:400 14px Inter; color:var(--text); margin-bottom:12px; outline:none; }
+  .tmt-form input:focus { border-color:var(--brand); box-shadow:0 0 0 3px rgba(42,93,52,.2); }
+  .tmt-form .btns { display:flex; gap:12px; }
+
+  .tmt-actions { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:28px; }
+  .tmt-actions .btn-primary { background:var(--brand); color:#fff; border:0; padding:12px 22px; border-radius:6px; font:600 15px Inter; cursor:pointer; }
+  .tmt-actions .btn-primary:hover { background:var(--brand-dark); }
+  .tmt-actions .btn-outline { background:#fff; color:var(--text); border:1px solid var(--border); padding:12px 22px; border-radius:6px; font:600 15px Inter; cursor:pointer; }
+  .tmt-actions .btn-outline:hover { background:var(--bg); }
+
+  .tmt-section-title { font:700 24px Inter; color:var(--text); margin:0 0 16px; }
+
+  .tmt-empty-banner { background:var(--surface-subtle); padding:16px 20px; border-radius:6px; font:400 15px Inter; color:var(--text); margin-bottom:16px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <div class="crumb">Workspace / My Training</div>
+      <div class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input placeholder="Search..."></div>
+      <button class="icon-btn" id="top-notifications" type="button" aria-label="Notifications">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+      </button>
+      <button class="icon-btn" id="top-profile" type="button" aria-label="Change password">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      </button>
+    </header>
+    <main class="trainer-main">
+      <div class="tmt-wrap" id="tmt"></div>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="js/trainer-shared.js"></script>
+<script>
+(function(){
+  TrainerUI.init('My Training');
+
+  const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const qs = name => new URLSearchParams(location.search).get(name);
+  const state = qs('state') || 'default';
+
+  const enrollments = [
+    { id:'1', name:'Python Basics', date:'12 Nov 2026', time:'09:00–12:00', status:'Pending',   outcome:'Not final' },
+    { id:'2', name:'Java Programming', date:'19 Nov 2026', time:'09:00–12:00', status:'Waitlisted',outcome:'Not final' },
+    { id:'3', name:'Business Communication', date:'25 Nov 2026', time:'13:00–16:00', status:'Approved', outcome:'Not final' }
+  ];
+
+  const history = [
+    { name:'Excel for Finance', date:'15 Sep 2026', status:'Completed', outcome:'Completed · Final', result:'88 / 100' },
+    { name:'Information Security', date:'10 Jun 2026', status:'Completed', outcome:'Completed · Final', result:'Pass' }
+  ];
+
+  let currentAction = null; // {id, name}
+
+  function actionLink(e){
+    if (state === 'cancelled') return `<button class="link-btn" data-view="${e.id}">View details</button>`;
+    if (state === 'started' && e.id === '1') return `<button class="link-btn" data-view="${e.id}">View session</button>`;
+    return `<button class="link-btn" data-cancel="${e.id}">Cancel enrollment</button>`;
+  }
+
+  function render(){
+    const hideTables = (state === 'empty' || state === 'error');
+
+    let html = `
+      <h1 class="tmt-h1">My Training</h1>
+      <p class="tmt-sub">Your enrollments and official training history</p>
+    `;
+
+    if (state === 'empty') {
+      html += `
+        <div class="tmt-empty-banner">No training yet. Browse the program catalog to find your next session.</div>
+        <div class="tmt-actions"><button class="btn-primary" data-go="trainer-program-catalog.html">Browse programs</button></div>
+      `;
+    } else if (state === 'error') {
+      html += `
+        <div class="tmt-empty-banner">I couldn’t load your training. Your existing enrollments are unchanged. Try again.</div>
+        <div class="tmt-actions"><button class="btn-primary" data-retry>Try again</button></div>
+      `;
+    } else {
+      // Main enrollments table
+      html += `
+        <div class="tmt-table-wrap">
+          <table>
+            <thead><tr><th>Program / session</th><th>Schedule</th><th>Enrollment status</th><th>Outcome</th><th>Action</th></tr></thead>
+            <tbody>
+              ${enrollments.map(e => `
+                <tr>
+                  <td>${esc(e.name)}</td>
+                  <td>${esc(e.date)}<br>${esc(e.time)}</td>
+                  <td>${esc(e.status)}</td>
+                  <td>${esc(e.outcome)}</td>
+                  <td>${actionLink(e)}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      // Context banners
+      if (state === 'confirm') {
+        const name = enrollments.find(x => x.id === currentAction?.id)?.name || 'Python Basics';
+        html += `
+          <div class="tmt-banner">Cancel ${esc(name)}? Cancellation is immediate; no administrator approval is required. A reason is optional. You can cancel Pending, Waitlisted or Approved enrollments before the session starts, even after the enrollment deadline.</div>
+          <div class="tmt-form">
+            <label>Cancellation reason (optional)</label>
+            <input type="text" id="cancel-reason" placeholder="Cancellation reason (optional)" maxlength="200">
+            <div class="btns">
+              <button class="btn-primary" data-confirm>Confirm cancellation</button>
+              <button class="btn-outline" data-keep>Keep enrollment</button>
+            </div>
+          </div>
+        `;
+      } else if (state === 'cancelled') {
+        html += `
+          <div class="tmt-banner success">Enrollment cancelled. Your history is retained. A freed Approved seat triggers FIFO waitlist promotion to Pending, not automatic approval.</div>
+          <div class="tmt-actions">
+            <button class="btn-primary" data-go="trainer-program-catalog.html">Browse programs</button>
+            <button class="btn-outline" data-go="trainer-notifications.html">View notifications</button>
+          </div>
+        `;
+      } else if (state === 'started') {
+        html += `
+          <div class="tmt-banner">Python Basics has started. Cancellation is no longer available for this session. Contact the L&amp;D Administrator for help.</div>
+          <div class="tmt-actions">
+            <button class="btn-primary" data-go="trainer-program-catalog.html">Browse programs</button>
+            <button class="btn-outline" data-go="trainer-notifications.html">View notifications</button>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="tmt-actions">
+            <button class="btn-primary" data-go="trainer-program-catalog.html">Browse programs</button>
+            <button class="btn-outline" data-go="trainer-notifications.html">View notifications</button>
+          </div>
+        `;
+      }
+
+      // Training history
+      html += `
+        <h2 class="tmt-section-title">Training history · Finalized outcomes</h2>
+        <div class="tmt-table-wrap">
+          <table>
+            <thead><tr><th>Program / session</th><th>Date</th><th>Enrollment status</th><th>Outcome</th><th>Result</th></tr></thead>
+            <tbody>
+              ${history.map(h => `
+                <tr>
+                  <td>${esc(h.name)}</td>
+                  <td>${esc(h.date)}</td>
+                  <td>${esc(h.status)}</td>
+                  <td>${esc(h.outcome)}</td>
+                  <td>${esc(h.result)}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    document.getElementById('tmt').innerHTML = html;
+  }
+
+  document.addEventListener('click', e => {
+    const cancelBtn = e.target.closest('[data-cancel]');
+    if (cancelBtn) {
+      currentAction = { id: cancelBtn.dataset.cancel, name: enrollments.find(x => x.id === cancelBtn.dataset.cancel)?.name || '' };
+      history.replaceState(null, '', '?state=confirm');
+      location.search = '?state=confirm';
+      return;
+    }
+
+    const goBtn = e.target.closest('[data-go]');
+    if (goBtn) { location.href = goBtn.dataset.go; return; }
+
+    const viewBtn = e.target.closest('[data-view]');
+    if (viewBtn) {
+      TrainerUI.toast('Opening details (prototype).');
+      return;
+    }
+
+    if (e.target.closest('[data-keep]')) {
+      location.search = '';
+      return;
+    }
+
+    if (e.target.closest('[data-confirm]')) {
+      location.search = '?state=cancelled';
+      return;
+    }
+
+    if (e.target.closest('[data-retry]')) {
+      location.search = '';
+      return;
+    }
+  });
+
+  const tn = document.getElementById('top-notifications');
+  if (tn) tn.addEventListener('click', () => location.href = 'trainer-notifications.html');
+  const tp = document.getElementById('top-profile');
+  if (tp) tp.addEventListener('click', () => location.href = 'change-password.html');
+
+  render();
+})();
+</script>
+</body>
+</html>

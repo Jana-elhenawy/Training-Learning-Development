@@ -11,7 +11,7 @@
 </style></head><body><div class="app"><aside class="sidebar" id="sidebar"></aside><div class="main-wrap">
 <header class="topbar"><div class="crumb" id="crumb">Workspace / Program Catalog</div>
 <div class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="global-search" placeholder="Search programs."></div>
-<button class="icon-btn" aria-label="Notifications" onclick="location.href='notification.html'"><svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></button></header>
+<button class="icon-btn" aria-label="Notifications" id="top-notifications"><svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></button></header>
 <main><div class="head"><div><h1 id="title">Program Catalog</h1><p id="subtitle"></p></div><div class="badges" id="badges"></div></div>
 <div class="page-actions" id="actions"></div>
 <section class="card"><div class="card-h"><h2 id="list-title">Available Programs</h2><span class="badge b-neutral" id="count"></span></div>
@@ -28,13 +28,16 @@ const navs={
  manager:['Dashboard','Team dashboard','Department employees','Employee records','Department reports','Attendance','Training suggestions','Program catalog','Notifications'],
  management:['Dashboard','Reports','Notification']
 };
-const hrefs={'Dashboard':'dashboard.html','Users':'users.html','Program Catalog':'program-catalog.html','Program catalog':'program-catalog.html','Sessions':'sessions.html','Enrollment Requests':'enrollment-requests.html','Direct Enrollment':'direct-enrollment.html','Results':'results.html','Employee History':'employee-history.html','Reports':'reports.html','Department reports':'reports.html','Audit and Security Log':'audit-security-log.html','System Settings':'system-settings.html','Notification':'notification.html','Notifications':'notification.html','Approvals':'approvals.html','Training plan':'training-plan.html','Access and HR review':'access-hr-review.html','My Training':role==='employee'?'my-training.html':'#','My Sessions':'#','Team dashboard':'#','Department employees':'#','Employee records':'#','Attendance':'#','Training suggestions':'#'};
+const hrefs={'Dashboard':'dashboard.html','Users':'users.html','Program Catalog':role==='trainer'?'trainer-program-catalog.html':'program-catalog.html','Program catalog':role==='trainer'?'trainer-program-catalog.html':'program-catalog.html','Sessions':'sessions.html','Enrollment Requests':'enrollment-requests.html','Direct Enrollment':'direct-enrollment.html','Results':'results.html','Employee History':'employee-history.html','Reports':'reports.html','Department reports':'reports.html','Audit and Security Log':'audit-security-log.html','System Settings':'system-settings.html','Notification':role==='trainer'?'trainer-notifications.html':'notification.html','Notifications':role==='trainer'?'trainer-notifications.html':'notification.html','Approvals':'approvals.html','Training plan':'training-plan.html','Access and HR review':'access-hr-review.html','My Training':role==='trainer'?'trainer-my-training.html':(role==='employee'?'my-training.html':'#'),'My Sessions':role==='trainer'?'trainer-my-sessions.html':'#','Team dashboard':'#','Department employees':'#','Employee records':'#','Attendance':'#','Training suggestions':'#'};
 function buildSidebar(active){
  const r=roleNames[role]||roleNames.employee;
  document.getElementById('sidebar').innerHTML=`<div class="logo"><img src="assets/logo-white.png" alt="RMO" onerror="this.parentNode.innerHTML='<div><div class=wm>RMO</div><small>RIDGELINE MOUNTAIN OUTFITTERS</small></div>'"></div><div class="role">${r}</div>`+
  (navs[role]||navs.employee).map(n=>`<a class="nav${n===active?' active':''}" href="${hrefs[n]||'#'}">${n}</a>`).join('')+
  `<div class="spacer"></div><a class="nav muted" href="change-password.html">Change password</a><a class="nav muted" href="index.html" id="logout">Log out</a>`;
  document.getElementById('logout').addEventListener('click',()=>{try{sessionStorage.clear()}catch(e){}});
+ document.getElementById('top-notifications').addEventListener('click',()=>{
+   location.href = role==='trainer' ? 'trainer-notifications.html' : 'notification.html';
+ });
 }
 function toast(message){const t=document.getElementById('toast');t.textContent=message;t.classList.add('show');clearTimeout(window._toastTimer);window._toastTimer=setTimeout(()=>t.classList.remove('show'),1800)}
 
@@ -73,7 +76,14 @@ if(!configs[role]){location.replace('dashboard.html')}else{
  document.getElementById('rows').innerHTML=rows.length?rows.map((r,i)=>'<tr>'+r.slice(0,-1).map((v,j)=>`<td>${v}</td>`).join('')+`<td><button class="btn outline row-action" data-name="${r[0]}">${role==='employee'?'View / Enroll':'View'}</button></td></tr>`).join(''):'<tr><td colspan="'+c.columns.length+'" style="padding:24px;text-align:center">No programs match your filters.</td></tr>';
  }
  render();['category','status','global-search'].forEach(id=>document.getElementById(id).addEventListener(id==='global-search'?'input':'change',render));
- document.addEventListener('click',e=>{const b=e.target.closest('[data-action],[data-name]');if(!b)return;if(role==='employee'&&b.dataset.name){location.href='program-details.html';return}toast(b.dataset.action?b.dataset.action+' selected':(role==='employee'?'Program details opened':'Program selected')+' (prototype)')});
+ document.addEventListener('click',e=>{
+   const b=e.target.closest('[data-action],[data-name]');if(!b)return;
+   if(b.dataset.name){
+     if(role==='employee'){location.href='program-details.html';return}
+     if(role==='trainer'){location.href='trainer-session-details.html';return}
+   }
+   toast(b.dataset.action?b.dataset.action+' selected':(role==='employee'?'Program details opened':'Program selected')+' (prototype)');
+ });
 }
 </script><script src="js/ld-interactions.js"></script>
 </body></html>

@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Trainer Program Catalog</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/trainer.css">
+<style>
+  .tc-top { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+  .tc-top h1 { font:700 40px/1.1 "Source Sans 3",Inter; color:var(--brand-dark); margin:0; }
+  
+  /* Toggle */
+  .tc-toggle { display:inline-flex; background:var(--surface-subtle); border-radius:6px; padding:3px; }
+  .tc-toggle button { border:0; background:transparent; padding:10px 34px; font:600 14px Inter; color:var(--text); border-radius:4px; cursor:pointer; }
+  .tc-toggle button.active { background:var(--brand); color:#fff; }
+
+  /* Search */
+  .tc-search { position:relative; margin-bottom:16px; }
+  .tc-search .icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); }
+  .tc-search input { width:100%; height:48px; padding:0 14px 0 44px; border:1px solid var(--border); border-radius:6px; background:#fff; font:400 15px Inter; color:var(--text); outline:none; }
+  .tc-search input:focus { border-color:var(--brand); box-shadow:0 0 0 3px rgba(42,93,52,.2); }
+
+  /* Filters */
+  .tc-filters { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
+  .tc-filters select { min-width:200px; height:42px; padding:0 34px 0 12px; border:1px solid var(--border); border-radius:6px; background:#fff; font:500 14px Inter; color:var(--text); appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23252925' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; }
+  .tc-chip { display:inline-flex; align-items:center; gap:8px; background:#e5ede1; color:var(--brand); padding:8px 12px; border-radius:6px; font:500 14px Inter; }
+  .tc-chip button { border:0; background:none; color:inherit; cursor:pointer; font-size:16px; line-height:1; }
+  .tc-clear { background:none; border:0; color:var(--brand); font:500 14px Inter; cursor:pointer; }
+  
+  /* Active only */
+  .tc-active { display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+  .tc-active label { display:flex; align-items:center; gap:8px; font:500 14px Inter; color:var(--text); }
+  .tc-active input[type=checkbox]{ width:18px; height:18px; accent-color:var(--brand); }
+  .tc-badge-view { background:var(--sand); color:var(--brand-dark); padding:6px 10px; border-radius:4px; font:600 12px Inter; }
+
+  /* Grid View */
+  .tc-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+  .tc-card { background:#e1e3de; border:1px solid #a3aa9b; border-radius:8px; padding:22px; box-shadow:0 2px 6px rgba(37,41,37,.18); display:flex; flex-direction:column; gap:14px; }
+  .tc-card .tag { display:inline-block; background:#d9c3a6; color:var(--brand-dark); font:600 12px Inter; padding:6px 14px; border-radius:4px; letter-spacing:.4px; text-transform:uppercase; align-self:flex-start; }
+  .tc-card .tag.gear { background:#edf0e9; border:1px solid #9eae9d; color:var(--brand-dark); }
+  .tc-card .tag.navigation { background:var(--brand-dark); color:#fff; }
+  .tc-card h3 { font:600 22px/1.3 Inter; color:var(--brand-dark); margin:0; min-height:58px; }
+  .tc-card dl { display:grid; grid-template-columns:90px 1fr; gap:8px 12px; margin:0; font:400 14px Inter; color:var(--text-2); align-items:center; }
+  .tc-card dl dt { color:var(--text-2); }
+  .tc-card dl dd { margin:0; color:var(--text); font-weight:600; }
+  .tc-card .mode-pill { display:inline-block; padding:4px 10px; border:1px solid var(--border); border-radius:4px; font:500 13px Inter; background:#fff; }
+  .tc-card .btn-details { margin-top:auto; background:var(--sand); border:1px solid var(--sand); color:var(--brand-dark); padding:12px; border-radius:6px; font:600 15px Inter; cursor:pointer; }
+  .tc-card .btn-details:hover { background:#cfb594; }
+
+  /* Table View */
+  .tc-table-wrap { border:1px solid var(--border); border-radius:6px; background:#fff; overflow-x:auto; }
+  .tc-table-wrap table { width:100%; border-collapse:collapse; min-width:900px; }
+  .tc-table-wrap th { background:var(--surface-subtle); text-align:left; font:500 12px Inter; letter-spacing:.4px; color:var(--text-2); padding:12px 16px; text-transform:uppercase; }
+  .tc-table-wrap td { border-top:1px solid var(--border-subtle); padding:16px; font:400 14px Inter; color:var(--text); vertical-align:middle; }
+  .tc-table-wrap td .pill { background:#f0f1ef; border-radius:12px; padding:4px 12px; font:500 12px Inter; color:var(--text-2); display:inline-block; }
+  .tc-table-wrap td .status { background:var(--success-bg); color:var(--success); border-radius:12px; padding:4px 12px; font:500 12px Inter; display:inline-block; }
+  .tc-table-wrap td .btn-view { border:1px solid var(--brand); background:#fff; color:var(--brand); padding:8px 20px; border-radius:4px; font:600 13px Inter; cursor:pointer; }
+  .tc-table-wrap td .btn-view:hover { background:var(--success-bg); }
+
+  /* Empty State */
+  .tc-empty { background:#e1e3de; border-radius:8px; padding:64px 24px; text-align:center; margin-top:12px; box-shadow:0 2px 6px rgba(37,41,37,.18); }
+  .tc-empty .mountain { width:80px; height:60px; margin:0 auto 16px; background:var(--brand); clip-path:polygon(50% 0, 100% 100%, 0 100%); opacity:.5; }
+  .tc-empty h3 { font:700 24px Inter; color:var(--brand-dark); margin:0 0 10px; }
+  .tc-empty p { font:400 15px Inter; color:var(--text-2); margin:0 0 24px; }
+  .tc-empty .actions { display:flex; gap:12px; justify-content:center; }
+  .tc-empty .actions .primary { background:var(--brand); color:#fff; border:1px solid var(--brand); padding:10px 20px; border-radius:4px; font:600 14px Inter; cursor:pointer; }
+  .tc-empty .actions .ghost { background:transparent; color:var(--brand-dark); border:1px solid var(--brand); padding:10px 20px; border-radius:4px; font:600 14px Inter; cursor:pointer; }
+
+  /* Error State */
+  .tc-error { background:var(--danger-bg); border:1px solid var(--danger); border-radius:6px; padding:14px 20px; color:var(--danger); display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+  .tc-error button { background:#a80000; color:#fff; border:0; padding:8px 18px; border-radius:4px; font:600 14px Inter; cursor:pointer; }
+
+  /* Footer/Pagination */
+  .tc-bottom { display:flex; justify-content:space-between; align-items:center; margin-top:24px; }
+  .tc-bottom .showing { font:400 14px Inter; color:var(--text-2); }
+  .tc-pagination { display:flex; gap:6px; }
+  .tc-pagination button { min-width:40px; height:40px; border:1px solid var(--border); background:#fff; border-radius:6px; font:500 14px Inter; color:var(--text); cursor:pointer; }
+  .tc-pagination button.active { background:var(--brand); color:#fff; border-color:var(--brand); }
+  .tc-pagination button:disabled { opacity:.4; cursor:not-allowed; }
+
+  @media(max-width:1100px){ .tc-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media(max-width:700px){ .tc-grid{ grid-template-columns:1fr; } .tc-top h1{ font-size:32px; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <div class="crumb">Workspace / Program catalog</div>
+      <div class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input placeholder="Search..."></div>
+      <button class="icon-btn" id="top-notifications" type="button" aria-label="Notifications">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+      </button>
+      <button class="icon-btn" id="top-profile" type="button" aria-label="Change password">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      </button>
+    </header>
+    <main class="trainer-main">
+      <div class="tc-top">
+        <h1>Program Catalog</h1>
+        <div class="tc-toggle" role="tablist">
+          <button class="active" data-view="grid" role="tab">Grid</button>
+          <button data-view="table" role="tab">Table</button>
+        </div>
+      </div>
+
+      <div class="tc-search">
+        <svg class="icon" viewBox="0 0 24 24" width="20" height="20"><circle cx="11" cy="11" r="7" fill="none" stroke="#252925" stroke-width="1.8"/><path d="m20 20-3.5-3.5" stroke="#252925" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <input id="tc-q" type="search" placeholder="Search programs by title or keyword...">
+      </div>
+
+      <div class="tc-filters">
+        <select id="tc-category">
+          <option value="all">Category</option>
+          <option>Safety</option><option>Gear</option><option>Navigation</option><option>Compliance</option><option>Finance</option><option>Management</option><option>Technical</option>
+        </select>
+        <select id="tc-mode">
+          <option value="all">Delivery mode</option>
+          <option>In-person</option><option>Online</option><option>Hybrid</option><option>Classroom</option>
+        </select>
+        <select id="tc-sort">
+          <option value="newest">Sort: Newest</option>
+          <option value="az">Sort: A–Z</option>
+          <option value="duration">Sort: Duration</option>
+        </select>
+        <span style="font:500 14px Inter;color:var(--text-2)">Active filters</span>
+        <span class="tc-chip" id="tc-chip-online">Online <button type="button" aria-label="Remove Online filter">×</button></span>
+        <button class="tc-clear" id="tc-clear">Clear all</button>
+      </div>
+
+      <div class="tc-active">
+        <label><input type="checkbox" id="tc-active-only"> Active only</label>
+        <span class="tc-badge-view">Employee view</span>
+      </div>
+
+      <div class="tc-error" id="tc-error" hidden>
+        <span>Something went wrong, please try again.</span>
+        <button type="button" id="tc-retry">Retry</button>
+      </div>
+
+      <div id="tc-results-grid" class="tc-grid"></div>
+      <div id="tc-results-table" class="tc-table-wrap" hidden></div>
+      
+      <div id="tc-empty" class="tc-empty" hidden>
+        <div class="mountain"></div>
+        <h3>No programs match your filters</h3>
+        <p>Try removing a filter or searching with a different keyword.</p>
+        <div class="actions">
+          <button class="primary" id="tc-empty-clear">Clear all filters</button>
+          <button class="ghost" id="tc-empty-browse">Browse all programs</button>
+        </div>
+      </div>
+
+      <div class="tc-bottom">
+        <span class="showing" id="tc-showing">Showing 1–3 of 3</span>
+        <div class="tc-pagination" id="tc-pagination"></div>
+      </div>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="js/trainer-shared.js"></script>
+<script>
+(function(){
+  // 1. تم التعديل هنا: Sidebar ياخد 'Dashboard' عشان يطابق الصورة
+  TrainerUI.init('Dashboard');
+
+  const programs = [
+    { name:'Trail Safety Fundamentals', category:'Safety', tag:'safety', duration:'12h', mode:'In-person', next:'14 Nov', status:'Active' },
+    { name:'Gear Care & Maintenance', category:'Gear', tag:'gear', duration:'3h', mode:'Online', next:'None upcoming', status:'Active' },
+    { name:'Backcountry Navigation', category:'Navigation', tag:'navigation', duration:'3d', mode:'Hybrid', next:'05 Nov', status:'Active' },
+    { name:'Financial Reporting', category:'Finance', tag:'finance', duration:'3 weeks', mode:'Online', next:'12 Nov', status:'Active' },
+    { name:'Workplace Safety', category:'Compliance', tag:'compliance', duration:'1 day', mode:'Classroom', next:'26 Nov', status:'Active' },
+    { name:'Excel for Analysts', category:'Technical', tag:'technical', duration:'2 days', mode:'Classroom', next:'19 Nov', status:'Active' },
+    { name:'Leadership Essentials', category:'Management', tag:'management', duration:'4 weeks', mode:'Hybrid', next:'10 Jan 2027', status:'Active' }
+  ];
+
+  const state = { view:'grid', q:'', category:'all', mode:'all', sort:'newest', activeOnly:false, onlineChip:true, page:1, perPage:6, hasError: false };
+
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function filtered(){
+    if (state.hasError) return []; // لو فيه error، مفيش داتا
+    let list = programs.slice();
+    if (state.onlineChip && state.mode === 'all') list = list.filter(p => p.mode === 'Online');
+    if (state.q) list = list.filter(p => (p.name+' '+p.category+' '+p.mode).toLowerCase().includes(state.q.toLowerCase()));
+    if (state.category !== 'all') list = list.filter(p => p.category === state.category);
+    if (state.mode !== 'all') list = list.filter(p => p.mode === state.mode);
+    if (state.activeOnly) list = list.filter(p => p.status === 'Active');
+    if (state.sort === 'az') list.sort((a,b)=>a.name.localeCompare(b.name));
+    else if (state.sort === 'duration') list.sort((a,b)=>a.duration.localeCompare(b.duration));
+    return list;
+  }
+
+  function renderGrid(list){
+    return list.map(p => `
+      <article class="tc-card" data-program="${esc(p.name)}">
+        <span class="tag ${esc(p.tag)}">${esc(p.category)}</span>
+        <h3>${esc(p.name)}</h3>
+        <dl>
+          <dt>Duration</dt><dd>${esc(p.duration)}</dd>
+          <dt>Mode</dt><dd><span class="mode-pill">${esc(p.mode)}</span></dd>
+          <dt>Sessions</dt><dd>${p.next === 'None upcoming' ? 'None upcoming' : 'Next session <b>'+esc(p.next)+'</b>'}</dd>
+        </dl>
+        <button class="btn-details" type="button" data-open="${esc(p.name)}">View details</button>
+      </article>
+    `).join('');
+  }
+
+  function renderTable(list){
+    return `<table>
+      <thead><tr><th>Program</th><th>Category</th><th>Duration</th><th>Mode</th><th>Next session</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>${list.map(p => `
+        <tr>
+          <td>${esc(p.name)}</td>
+          <td>${esc(p.category)}</td>
+          <td>${esc(p.duration)}</td>
+          <td><span class="pill">${esc(p.mode)}</span></td>
+          <td>${p.next === 'None upcoming' ? '—' : esc(p.next)}</td>
+          <td><span class="status">${esc(p.status)}</span></td>
+          <td><button class="btn-view" type="button" data-open="${esc(p.name)}">View</button></td>
+        </tr>`).join('')}</tbody>
+    </table>`;
+  }
+
+  function renderPagination(total){
+    const pages = Math.max(1, Math.ceil(total / state.perPage));
+    const from = total === 0 ? 0 : (state.page-1)*state.perPage + 1;
+    const to = Math.min(total, state.page*state.perPage);
+    $('#tc-showing').textContent = `Showing ${from}–${to} of ${total}`;
+    let html = `<button type="button" data-page="prev" ${state.page===1?'disabled':''}>‹</button>`;
+    for (let i=1; i<=Math.min(pages, 3); i++) {
+      html += `<button type="button" data-page="${i}" class="${state.page===i?'active':''}">${i}</button>`;
+    }
+    html += `<button type="button" data-page="next" ${state.page===pages?'disabled':''}>›</button>`;
+    $('#tc-pagination').innerHTML = html;
+  }
+
+  function render(){
+    const list = filtered();
+    const start = (state.page-1)*state.perPage;
+    const visible = list.slice(start, start+state.perPage);
+
+    const hasResults = visible.length > 0;
+    
+    // إظهار/إخفاء الـ error
+    $('#tc-error').hidden = !state.hasError;
+
+    $('#tc-empty').hidden = hasResults || state.hasError;
+    $('#tc-results-grid').hidden = !hasResults || state.view !== 'grid';
+    $('#tc-results-table').hidden = !hasResults || state.view !== 'table';
+
+    if (hasResults) {
+      $('#tc-results-grid').innerHTML = renderGrid(visible);
+      $('#tc-results-table').innerHTML = renderTable(visible);
+    }
+    renderPagination(state.hasError ? 0 : list.length);
+    if (list.length === 0 && state.page !== 1) { state.page = 1; render(); }
+  }
+
+  // Toggle Grid/Table
+  document.querySelectorAll('[data-view]').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('[data-view]').forEach(x => x.classList.toggle('active', x === b));
+      state.view = b.dataset.view;
+      render();
+    });
+  });
+
+  // Search
+  $('#tc-q').addEventListener('input', e => { state.q = e.target.value; state.page = 1; render(); });
+
+  // Filters
+  $('#tc-category').addEventListener('change', e => { state.category = e.target.value; state.page = 1; render(); });
+  $('#tc-mode').addEventListener('change', e => { state.mode = e.target.value; state.onlineChip = false; state.page = 1; render(); });
+  $('#tc-sort').addEventListener('change', e => { state.sort = e.target.value; render(); });
+  $('#tc-active-only').addEventListener('change', e => { state.activeOnly = e.target.checked; state.page = 1; render(); });
+
+  $('#tc-chip-online button').addEventListener('click', () => { state.onlineChip = false; $('#tc-chip-online').remove(); state.page = 1; render(); });
+  
+  $('#tc-clear').addEventListener('click', () => {
+    state.q = ''; state.category='all'; state.mode='all'; state.sort='newest'; state.activeOnly=false; state.onlineChip=false; state.page=1; state.hasError = false;
+    $('#tc-q').value=''; $('#tc-category').value='all'; $('#tc-mode').value='all'; $('#tc-sort').value='newest'; $('#tc-active-only').checked=false;
+    const chip = document.getElementById('tc-chip-online'); if (chip) chip.style.display='none';
+    render();
+  });
+
+  // Empty state actions
+  $('#tc-empty-clear').addEventListener('click', () => $('#tc-clear').click());
+  $('#tc-empty-browse').addEventListener('click', () => {
+    state.q=''; state.category='all'; state.mode='all'; state.sort='newest'; state.activeOnly=false; state.onlineChip=false; state.page=1; state.hasError = false;
+    $('#tc-q').value=''; $('#tc-category').value='all'; $('#tc-mode').value='all'; $('#tc-sort').value='newest'; $('#tc-active-only').checked=false;
+    render();
+  });
+
+  // Retry (Simulated Error) - بيحاكي لما يكون فيه error
+  $('#tc-retry').addEventListener('click', () => { state.hasError = false; render(); });
+  
+  // Pagination
+  $('#tc-pagination').addEventListener('click', e => {
+    const b = e.target.closest('[data-page]'); if (!b) return;
+    const v = b.dataset.page;
+    const total = filtered().length;
+    const pages = Math.max(1, Math.ceil(total / state.perPage));
+    if (v === 'prev') state.page = Math.max(1, state.page-1);
+    else if (v === 'next') state.page = Math.min(pages, state.page+1);
+    else state.page = Number(v);
+    render();
+  });
+
+  // Open details
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-open]'); if (!b) return;
+    sessionStorage.setItem('tms.trainer.program', b.dataset.open);
+    location.href = 'trainer-program-details.html';
+  });
+
+  // Topbar icons
+  const tn = document.getElementById('top-notifications');
+  if (tn) tn.addEventListener('click', () => location.href = 'trainer-notifications.html');
+  const tp = document.getElementById('top-profile');
+  if (tp) tp.addEventListener('click', () => location.href = 'change-password.html');
+
+  render();
+})();
+</script>
+</body>
+</html>

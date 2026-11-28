@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Results</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/trainer.css">
+<style>
+  /* Page-specific overrides for the 5 result states */
+  .tr-wrap { max-width:1180px; }
+  .tr-title { font:700 30px/1.2 Inter; color:var(--text); margin:0 0 8px; }
+  .tr-sub { font:400 15px/1.5 Inter; color:var(--text-2); margin:0 0 20px; }
+  .tr-banner { border-radius:8px; padding:16px 20px; margin-bottom:20px; font:400 15px/1.5 Inter; }
+  .tr-banner.err { background:var(--danger-bg); border:1px solid var(--danger); color:var(--danger); }
+  .tr-banner.info { background:#e3eefc; border:1px solid #6e9bdc; color:#1f3b63; }
+  .tr-banner.note { background:var(--surface-subtle); border:1px solid var(--border); color:var(--text); }
+
+  .tr-table-wrap { background:#fff; border-radius:8px; overflow:hidden; margin-bottom:24px; border:1px solid var(--border-subtle); }
+  .tr-table-wrap table { width:100%; border-collapse:collapse; min-width:900px; }
+  .tr-table-wrap th { background:var(--surface-subtle); text-align:left; font:500 14px Inter; color:var(--text-2); padding:14px 18px; }
+  .tr-table-wrap td { padding:16px 18px; font:400 14px/1.4 Inter; color:var(--text); border-top:1px solid var(--border-subtle); vertical-align:middle; }
+  .tr-table-wrap td .score-input { width:110px; padding:10px 12px; border:1px solid var(--brand); border-radius:8px; font:500 15px Inter; color:var(--text); text-align:center; }
+  .tr-table-wrap td .score-input.invalid { border-color:var(--danger); color:var(--danger); background:#fdf1f0; }
+  .tr-table-wrap tr.row-error { background:#fdf1f0; }
+  .tr-table-wrap .pill { display:inline-block; padding:4px 10px; border-radius:12px; font:500 12px Inter; }
+  .tr-table-wrap .pill.amber { background:var(--warning-bg); color:var(--warning); }
+  .tr-table-wrap .pill.green { background:var(--success-bg); color:var(--success); }
+  .tr-table-wrap .pill.gray { background:#eee; color:var(--text-2); }
+  .tr-table-wrap .pill.red { background:var(--danger-bg); color:#a12f2f; }
+
+  .tr-actions { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
+  .tr-actions .btn-pill { padding:14px 28px; border-radius:28px; font:600 15px Inter; cursor:pointer; border:1px solid transparent; min-width:180px; }
+  .tr-actions .btn-pill.primary { background:var(--brand); color:#fff; }
+  .tr-actions .btn-pill.primary:hover { background:var(--brand-dark); }
+  .tr-actions .btn-pill.secondary { background:#d4d4d0; color:var(--text); cursor:not-allowed; border:0; }
+  .tr-actions .btn-pill.outline { background:#fff; color:var(--text); border-color:var(--brand); }
+  .tr-actions .btn-pill.outline:hover { background:var(--bg); }
+  .tr-actions .btn-pill:disabled { opacity:.65; cursor:not-allowed; }
+
+  .tr-footnote { font:400 15px/1.5 Inter; color:var(--text); margin:0; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <div class="crumb">Workspace / Results</div>
+      <div class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input placeholder="Search records..."></div>
+      <button class="icon-btn" id="top-notifications" type="button" aria-label="Notifications">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+      </button>
+      <button class="icon-btn" id="top-profile" type="button" aria-label="Change password">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      </button>
+    </header>
+    <main class="trainer-main">
+      <div class="tr-wrap" id="tr"></div>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="js/trainer-shared.js"></script>
+<script>
+(function(){
+  TrainerUI.init('My Sessions');
+
+  const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const qs = name => new URLSearchParams(location.search).get(name);
+
+  const participants = [
+    { id:'E-1024', name:'Roaa Abdelfatah', attendance:100, score:88,  pass:'Pass', status:'Preliminary' },
+    { id:'E-1025', name:'Jana',           attendance:90,  score:72,  pass:'Fail', status:'Preliminary' },
+    { id:'E-1026', name:'Shrouk',         attendance:50,  score:80,  pass:'Pass', status:'Preliminary' },
+    { id:'E-1027', name:'Mazen',          attendance:100, score:105, pass:'Not assessed', status:'Input missing' },
+    { id:'E-1028', name:'Nour Hassan',    attendance:100, score:45,  pass:'Fail', status:'Preliminary' }
+  ];
+
+  const reviewRows = [
+    { name:'Roaa Abdelfatah', missing:'None', status:'Ready', next:'Review' },
+    { name:'Jana',            missing:'Assessment result', status:'Blocked', next:'Enter Pass / Fail' },
+    { name:'Shrouk',          missing:'Attendance on 06 Nov', status:'Blocked', next:'Open attendance' }
+  ];
+
+  const finalLocked = [
+    { id:'E-1024', name:'Roaa Abdelfatah', attendance:100, score:88, outcome:'Completed', enrollment:'Completed',        result:'Finalized · Locked' },
+    { id:'E-1025', name:'Jana',           attendance:90,  score:72, outcome:'Completed', enrollment:'Completed',        result:'Finalized · Locked' },
+    { id:'E-1026', name:'Shrouk',         attendance:50,  score:80, outcome:'Incomplete', enrollment:'Not Completed',   result:'Finalized · Locked' },
+    { id:'E-1027', name:'Mazen',          attendance:100, score:91, outcome:'Completed', enrollment:'Completed',        result:'Finalized · Locked' },
+    { id:'E-1028', name:'Nour Hassan',    attendance:100, score:45, outcome:'Failed',    enrollment:'Not Completed',   result:'Finalized · Locked' }
+  ];
+
+  const finalPassFail = [
+    { name:'Roaa Abdelfatah', attendance:100, assessment:'Pass', outcome:'Completed',  enrollment:'Completed' },
+    { name:'Jana',            attendance:100, assessment:'Fail', outcome:'Failed',     enrollment:'Not Completed' },
+    { name:'Shrouk',          attendance:60,  assessment:'Pass', outcome:'Incomplete', enrollment:'Not Completed' },
+    { name:'Mazen',           attendance:0,   assessment:'Not assessed', outcome:'Incomplete', enrollment:'Not Completed' }
+  ];
+
+  const state = qs('state') || 'preliminary-score';
+
+  function renderPreliminaryScore(){
+    const hasError = participants.some(p => p.score > 100 || p.score < 0 || isNaN(p.score));
+    const errMsg = 'Input missing: valid score for E-1027 (Mazen) — 105 is outside 0–100. Outcome is pending.';
+    return `
+      <h1 class="tr-title">Results — Preliminary Outcomes</h1>
+      <p class="tr-sub">Session: SES-2102 | Data Privacy Basics | Assessment Type: Score(0-100) | Max Score: 100 Passing Score: 50</p>
+      ${hasError ? `<div class="tr-banner err">${esc(errMsg)}</div>` : ''}
+      <div class="tr-table-wrap">
+        <table>
+          <thead><tr><th>Employee No.</th><th>Full Name</th><th>Attendance %</th><th>Score</th><th>Preliminary Outcome</th><th>Result Status</th></tr></thead>
+          <tbody>
+            ${participants.map(p => {
+              const invalid = p.score > 100 || p.score < 0 || isNaN(p.score);
+              const outcome = invalid ? 'Input missing' : (p.attendance < 80 ? 'Incomplete' : (p.score >= 50 ? 'Completed' : 'Failed'));
+              return `<tr class="${invalid ? 'row-error' : ''}">
+                <td>${esc(p.id)}</td>
+                <td>${esc(p.name)}</td>
+                <td>${p.attendance}%</td>
+                <td><input class="score-input ${invalid?'invalid':''}" value="${p.score}" data-id="${p.id}"></td>
+                <td style="${invalid?'color:var(--danger)':''}">${esc(outcome)}</td>
+                <td>${invalid ? '' : '<span class="pill amber">Preliminary</span>'}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div class="tr-actions">
+        <button class="btn-pill primary" type="button" id="save-scores">Save Scores</button>
+        <button class="btn-pill secondary" type="button" id="finalize" disabled>Finalize Results</button>
+        <button class="btn-pill outline" type="button" data-go="trainer-my-sessions.html">Back to My Sessions</button>
+      </div>
+      <p class="tr-footnote">Preliminary outcomes are recalculated after every attendance or score change and become official only when results are finalized. Finalize is available after the last session date (08/11/2026) and once no input is missing.</p>
+    `;
+  }
+
+  function renderPreliminaryPassFail(){
+    return `
+      <h1 class="tr-title">Results — Pass / Fail</h1>
+      <p class="tr-sub">· Assessment type: Pass/Fail · Minimum attendance: 80%</p>
+      <div class="tr-table-wrap">
+        <table>
+          <thead><tr><th>Participant</th><th>Attendance</th><th>Assessment</th><th>Preliminary outcome</th><th>Eligibility</th></tr></thead>
+          <tbody>
+            ${finalPassFail.map(p => `
+              <tr>
+                <td>${esc(p.name)}</td>
+                <td>${p.attendance}%</td>
+                <td>${esc(p.assessment)}</td>
+                <td>${esc(p.outcome)}</td>
+                <td>${p.attendance >= 80 ? 'Eligible' : 'No Present / Late date'}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div class="tr-banner note">Preliminary outcomes are not official history. Pass/Fail programs require Pass and the minimum attendance. A participant must have at least one Present or Late date to be assessed. Finalize is only available to the assigned trainer after the last session date, with no required inputs missing.</div>
+      <div class="tr-actions">
+        <button class="btn-pill primary" type="button" id="save-results">Save results</button>
+        <button class="btn-pill outline" type="button" id="review-finalization">Review finalization</button>
+      </div>
+    `;
+  }
+
+  function renderReview(){
+    return `
+      <h1 class="tr-title">Review Finalization</h1>
+      <p class="tr-sub">Session SES-2102 · Last session date: 08 Nov 2026</p>
+      <div class="tr-table-wrap">
+        <table>
+          <thead><tr><th>Participant</th><th>Missing input</th><th>Outcome status</th><th>Next step</th></tr></thead>
+          <tbody>
+            ${reviewRows.map(r => `
+              <tr>
+                <td>${esc(r.name)}</td>
+                <td>${esc(r.missing)}</td>
+                <td>${esc(r.status)}</td>
+                <td>${esc(r.next)}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div class="tr-banner note">Finalization blocked: complete the two missing records first. After the last session date and once all required inputs are complete, finalization locks results, sets the session to Completed, sets enrollments to Completed / Not Completed and notifies participants. Finalization before the last session date is unavailable.</div>
+      <div class="tr-actions">
+        <button class="btn-pill primary" type="button" data-go="trainer-results.html?state=preliminary-score">Complete missing results</button>
+        <button class="btn-pill outline" type="button" data-go="trainer-attendance.html">Open attendance</button>
+      </div>
+    `;
+  }
+
+  function renderFinalScore(){
+    return `
+      <h1 class="tr-title">Final Results — Locked</h1>
+      <p class="tr-sub">Session: SES-2102 | Data Privacy Basics | Assessment: Final Assessment | Max Score: 100 Passing Score: 50</p>
+      <div class="tr-banner info">Results finalized on 12 Nov 2026. Outcomes are final, the session is Completed and participants were notified.</div>
+      <div class="tr-table-wrap">
+        <table>
+          <thead><tr><th>Employee No.</th><th>Full Name</th><th>Attendance %</th><th>Score</th><th>Final Outcome</th><th>Enrollment Status</th><th>Result Status</th></tr></thead>
+          <tbody>
+            ${finalLocked.map(p => `
+              <tr>
+                <td>${esc(p.id)}</td>
+                <td>${esc(p.name)}</td>
+                <td>${p.attendance}%</td>
+                <td>${p.score}</td>
+                <td>${esc(p.outcome)}</td>
+                <td><span class="pill ${p.enrollment==='Completed'?'green':'amber'}">${esc(p.enrollment)}</span></td>
+                <td><span class="pill gray">${esc(p.result)}</span></td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div class="tr-actions">
+        <button class="btn-pill secondary" type="button" disabled>Save Scores</button>
+        <button class="btn-pill secondary" type="button" disabled>Finalize Results</button>
+        <button class="btn-pill outline" type="button" data-go="trainer-my-sessions.html">Back to My Sessions</button>
+      </div>
+      <p class="tr-footnote">Only the L&amp;D Administrator can correct finalized results, with a reason. Every correction is logged.</p>
+    `;
+  }
+
+  function renderFinalPassFail(){
+    return `
+      <h1 class="tr-title">Final Results — Pass / Fail</h1>
+      <p class="tr-sub">· Assessment type: Pass/Fail · Minimum attendance: 80%</p>
+      <div class="tr-table-wrap">
+        <table>
+          <thead><tr><th>Participant</th><th>Attendance</th><th>Assessment</th><th>Final outcome</th><th>Enrollment status</th></tr></thead>
+          <tbody>
+            ${finalPassFail.map(p => `
+              <tr>
+                <td>${esc(p.name)}</td>
+                <td>${p.attendance}%</td>
+                <td>${esc(p.assessment)}</td>
+                <td>${esc(p.outcome)}</td>
+                <td><span class="pill ${p.enrollment==='Completed'?'green':'amber'}">${esc(p.enrollment)}</span></td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div class="tr-banner note">Finalized · Locked. Session Completed. Outcomes are now official and participants have been notified. Only the L&amp;D Administrator may correct or override a result, with a reason and an audit entry.</div>
+      <div class="tr-actions">
+        <button class="btn-pill primary" type="button" data-go="trainer-my-sessions.html">Back to My Sessions</button>
+        <button class="btn-pill outline" type="button" data-go="trainer-attendance.html">View attendance</button>
+      </div>
+    `;
+  }
+
+  function render(){
+    const el = document.getElementById('tr');
+    let html = '';
+    if (state === 'preliminary-score') html = renderPreliminaryScore();
+    else if (state === 'preliminary-passfail') html = renderPreliminaryPassFail();
+    else if (state === 'review') html = renderReview();
+    else if (state === 'final-score') html = renderFinalScore();
+    else if (state === 'final-passfail') html = renderFinalPassFail();
+    else html = renderPreliminaryScore();
+    el.innerHTML = html;
+
+    // Wire up actions
+    const go = e => { const b = e.target.closest('[data-go]'); if (b) location.href = b.dataset.go; };
+    document.addEventListener('click', go);
+
+    const saveBtn = document.getElementById('save-scores') || document.getElementById('save-results');
+    if (saveBtn) saveBtn.addEventListener('click', () => TrainerUI.toast('Scores saved.'));
+
+    const finalizeBtn = document.getElementById('finalize');
+    if (finalizeBtn) finalizeBtn.addEventListener('click', () => {
+      const hasError = participants.some(p => p.score > 100 || p.score < 0 || isNaN(p.score));
+      if (hasError) { TrainerUI.toast('Please resolve all missing inputs before finalizing.'); return; }
+      location.href = 'trainer-results.html?state=review';
+    });
+
+    const reviewBtn = document.getElementById('review-finalization');
+    if (reviewBtn) reviewBtn.addEventListener('click', () => location.href = 'trainer-results.html?state=review');
+
+    // Score inputs — allow only numeric, mark invalid
+    document.querySelectorAll('.score-input').forEach(inp => {
+      inp.addEventListener('input', () => {
+        const v = Number(inp.value);
+        inp.classList.toggle('invalid', isNaN(v) || v < 0 || v > 100);
+      });
+    });
+  }
+
+  const tn = document.getElementById('top-notifications');
+  if (tn) tn.addEventListener('click', () => location.href = 'trainer-notifications.html');
+  const tp = document.getElementById('top-profile');
+  if (tp) tp.addEventListener('click', () => location.href = 'change-password.html');
+
+  render();
+})();
+</script>
+</body>
+</html>

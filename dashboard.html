@@ -66,7 +66,7 @@
       trainer: {
         label: 'Trainer', welcome: 'Welcome, Dr. Khaled', sub: 'Trainer home', badges: [['Trainer view', 'info'], ['Assigned sessions only', 'neutral']],
         nav: ['Dashboard', 'Program Catalog', 'My Training', 'My Sessions', 'Notification'],
-        shortcuts: ['My Sessions', 'Notification', 'Program Catalog'],
+        shortcuts: ['My Sessions', 'Notification', 'Program Catalog', 'My Training'],
         blocks: [
           { t: 'kpis', title: 'Pending Items', tag: 'Needs action', cols: 2, items: [['Sessions to record', '3', 'attendance'], ['Sessions to finalize', '2', 'results']] },
           {
@@ -122,9 +122,9 @@
       kpis: b => `<section class="card"><div class="card-h"><h2>${b.title}</h2>${B(b.tag, b.tagc || 'neutral')}</div>
    <div class="kpis" style="grid-template-columns:repeat(${b.cols},1fr)">${b.items.map(k => `<div class="kpi"><span class="l">${k[0]}</span><span class="v">${k[1]}</span>${k[2] ? `<span class="s">${k[2]}</span>` : ''}</div>`).join('')}</div></section>`,
       table: b => `<section class="card tcard" style="flex:${b.grow || 1} 1 420px"><div class="card-h"><h2>${b.title}</h2><span class="badge" style="color:var(--text-2)">${b.meta}</span></div>
-   <table><thead><tr>${b.head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${b.rows.map(r => `<tr>${r.map(c => c === 'open' ? `<td><button class="btn outline" data-action="info" data-label="Session details">open</button></td>` : `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></section>`,
-      notes: b => `<section class="card grow"><div class="card-h"><h2>Recent Notification</h2>${B(b.unread + ' unread', 'danger')}</div>${b.items.map(item).join('')}<button class="btn self" data-go="notification.html">${NOTE_BTN}</button></section>`,
-      list: b => `<section class="card grow"><div class="card-h"><h2>${b.title}</h2></div>${b.items.map(item).join('')}</section>`,
+   <table><thead><tr>${b.head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${b.rows.map(r => `<tr>${r.map(c => c === 'open' ? `<td><button class="btn outline" data-action="open-session">open</button></td>` : `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></section>`,
+    notes: b => `<section class="card grow">...<button class="btn self" data-go="notification.html">${NOTE_BTN}</button></section>`,
+    list: b => `<section class="card grow"><div class="card-h"><h2>${b.title}</h2></div>${b.items.map(item).join('')}</section>`,
       period: () => `<section class="card" style="flex:0 1 420px"><h2 style="font:600 20px/28px Inter">Period Filter</h2><div class="field-sel"><label>Period</label><select><option>Last 12 months</option><option>Last 6 months</option><option>Last 30 days</option></select></div><div class="actions"><button class="btn" data-period="reset">Reset</button><button class="btn primary" data-period="apply">Apply period</button></div></section>`
     };
     const block = b => b.t === 'row' ? `<div class="row">${b.parts.map(p => render[p.t](p)).join('')}</div>` : render[b.t](b);
@@ -136,13 +136,13 @@
       try { sessionStorage.setItem('tms.role', key) } catch (_) { }
       $('#role').value = key;
       $('#sidebar').innerHTML = logo + `<div class="role">${esc(r.label)}</div><div style="height:0"></div>` +
-        r.nav.map((n, i) => { const files = { 'Dashboard': 'dashboard.html', 'Users': 'users.html', 'Program Catalog': 'program-catalog.html', 'Sessions': 'sessions.html', 'Enrollment Requests': 'enrollment-requests.html', 'Direct Enrollment': 'direct-enrollment.html', 'Results': 'results.html', 'Employee History': 'employee-history.html', 'Reports': (key === 'management' ? 'management-reports.html' : 'reports.html'), 'Audit and Security Log': 'audit-security-log.html', 'System Settings': 'system-settings.html', 'Notification': 'notification.html', 'My Training': key === 'employee' ? 'my-training.html' : '#', 'Approvals': (key === 'management' ? 'management-approvals.html' : 'approvals.html'), 'Training plan': (key === 'management' ? 'management-training-plan.html' : 'training-plan.html'), 'Access and HR review': (key === 'management' ? 'management-access-review.html' : 'access-hr-review.html'), 'Management review': 'management-review.html', 'Team dashboard': 'manager-team-dashboard.html', 'Department employees': 'manager-department-employees.html', 'Employee records': 'manager-employee-record.html', 'Department reports': 'manager-department-reports.html', 'Attendance': 'manager-attendance.html', 'Training suggestions': 'manager-training-suggestions.html', 'Program catalog': 'manager-program-catalog.html', 'Notifications': 'notification.html', 'Effectiveness reviews': 'manager-effectiveness-reviews.html' }; return `<a class="nav${i ? '' : ' active'}" href="${files[n] || '#'}">${esc(n)}</a>` }).join('') +
+        r.nav.map((n, i) => { const files = { 'Dashboard': 'dashboard.html', 'Users': 'users.html', 'Program Catalog': key === 'trainer' ? 'trainer-program-catalog.html' : 'program-catalog.html', 'Sessions': 'sessions.html', 'Enrollment Requests': 'enrollment-requests.html', 'Direct Enrollment': 'direct-enrollment.html', 'Results': 'results.html', 'Employee History': 'employee-history.html', 'Reports': (key === 'management' ? 'management-reports.html' : 'reports.html'), 'Audit and Security Log': 'audit-security-log.html', 'System Settings': 'system-settings.html', 'Notification': key === 'trainer' ? 'trainer-notifications.html' : 'notification.html', 'My Training': key === 'employee' ? 'my-training.html' : (key === 'trainer' ? 'trainer-my-training.html' : '#'), 'My Sessions': key === 'trainer' ? 'trainer-my-sessions.html' : '#', 'Approvals': (key === 'management' ? 'management-approvals.html' : 'approvals.html'), 'Training plan': (key === 'management' ? 'management-training-plan.html' : 'training-plan.html'), 'Access and HR review': (key === 'management' ? 'management-access-review.html' : 'access-hr-review.html'), 'Management review': 'management-review.html', 'Team dashboard': 'manager-team-dashboard.html', 'Department employees': 'manager-department-employees.html', 'Employee records': 'manager-employee-record.html', 'Department reports': 'manager-department-reports.html', 'Attendance': 'manager-attendance.html', 'Training suggestions': 'manager-training-suggestions.html', 'Program catalog': 'manager-program-catalog.html', 'Notifications': 'notification.html', 'Effectiveness reviews': 'manager-effectiveness-reviews.html' }; return `<a class="nav${i ? '' : ' active'}" href="${files[n] || '#'}">${esc(n)}</a>` }).join('') +
         `<div class="spacer"></div><button class="nav muted" data-go="change-password.html" type="button">Change password</button><button class="nav muted" id="logout">Log out</button>`;
       $('#main').innerHTML = `<div class="head"><div><h1>${esc(r.welcome)}</h1><p>${esc(r.sub)}</p></div><div class="badges">${r.badges.map(b => B(b[0], b[1])).join('')}</div></div>
     <section class="card"><h2 style="font:600 20px/28px Inter">Shortcuts</h2><div class="shortcuts">${r.shortcuts.map((s, i) => {
           const shortcutTargets = {
             employee: {'Browse Program Catalog':'program-catalog.html','Notification':'notification.html','My Training':'my-training.html'},
-            trainer: {'Notification':'notification.html','Program Catalog':'program-catalog.html'},
+            trainer: {'My Sessions':'trainer-my-sessions.html','Notification':'trainer-notifications.html','Program Catalog':'trainer-program-catalog.html','My Training':'trainer-my-training.html'},
             ld: {'Enrollment Requests':'enrollment-requests.html','Create Session':'sessions.html','Create User':'users.html','Direct Enrollment':'direct-enrollment.html','Reports':'reports.html','Approvals':'approvals.html','Training plan':'training-plan.html'},
             manager: {'Open team dashboard':'manager-team-dashboard.html','Training suggestions':'manager-training-suggestions.html','Program catalog':'manager-program-catalog.html','Notification':'notification.html'},
             management: {'Open Reports':'management-reports.html','Notification':'notification.html','Approvals':'management-approvals.html','Training plan':'management-training-plan.html','Access and HR review':'management-access-review.html','Management review':'management-review.html'}
@@ -186,7 +186,11 @@
     document.addEventListener('click', e => {
       const go = e.target.closest('[data-go]');
       if (go) { location.href = go.dataset.go; return; }
-      if (e.target.id === 'top-notifications') { location.href = 'notification.html'; return; }
+      if (e.target.id === 'top-notifications') {
+        const r = $('#role').value;
+        location.href = r === 'trainer' ? 'trainer-notifications.html' : 'notification.html';
+        return;
+      }
       if (e.target.id === 'top-profile') { location.href = 'change-password.html'; return; }
       if (e.target.id === 'logout') { try { sessionStorage.clear(); } catch (_) {} location.href = 'index.html'; return; }
       const period = e.target.closest('[data-period]');
@@ -199,6 +203,7 @@
       const action = e.target.closest('[data-action]');
       if (action) {
         if (action.dataset.action === 'export-dashboard') { exportDashboard(); return; }
+        if (action.dataset.action === 'open-session') { location.href = 'trainer-session-details.html'; return; }
         if (action.dataset.action === 'info') {
           notify(action.dataset.label + ' is not a separate screen in this project yet.');
           return;

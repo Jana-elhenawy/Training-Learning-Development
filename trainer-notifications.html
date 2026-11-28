@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TMS – Trainer Notifications</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/trainer.css">
+<style>
+  /* تنسيقات مخصصة لصفحة الإشعارات لتطابق التصميم بدقة */
+  .notif-table th { background: var(--surface-subtle); padding: 12px 16px; font: 500 13px Inter; color: var(--text-2); text-align: left; }
+  .notif-table td { padding: 14px 16px; font: 400 14px Inter; color: var(--text); border-bottom: 1px solid var(--border-subtle); vertical-align: middle; }
+  .notif-table tr:last-child td { border-bottom: none; }
+  
+  .notif-panel { background: #fff; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+  .notif-panel-header { background: var(--brand); color: #fff; padding: 12px 16px; font: 600 16px Inter; }
+  .notif-panel-body { padding: 20px; flex: 1; }
+  
+  .btn-mark-read { background: var(--brand); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font: 500 14px Inter; cursor: pointer; }
+  .btn-mark-read:hover { background: var(--brand-dark); }
+  .btn-open { background: #fff; color: var(--text); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; font: 500 14px Inter; cursor: pointer; }
+  .btn-open:hover { background: var(--bg); }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <div class="crumb">Workspace / Overview</div>
+      <div class="search">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" placeholder="Search." aria-label="Search">
+      </div>
+      <button class="icon-btn" type="button" aria-label="Notifications">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+      </button>
+      <button class="icon-btn" type="button" aria-label="Profile" onclick="location.href='change-password.html'">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      </button>
+    </header>
+    
+    <main class="trainer-main" style="padding: 32px;">
+      <!-- Header -->
+      <div style="margin-bottom: 24px;">
+        <h1 style="font: 700 28px Inter; color: var(--text); margin-bottom: 8px;">Notification Inbox</h1>
+        <p style="font: 400 16px Inter; color: var(--text-2);">2 unread notifications • 4 notifications in total</p>
+      </div>
+
+      <!-- Notifications Table -->
+      <div style="background: #fff; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 24px;">
+        <table class="notif-table" style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th style="width: 100px;">Status</th>
+              <th>Message / Summary</th>
+              <th style="width: 150px;">Date</th>
+              <th style="width: 220px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Row 1 -->
+            <tr>
+              <td>Unread</td>
+              <td>Session reminder: Data Privacy Basics</td>
+              <td>23 Oct 2026<br><span style="color:var(--text-muted); font-size:12px;">09:30</span></td>
+              <td style="display:flex; gap:8px;">
+                <button class="btn-mark-read">Mark as read</button>
+                <button class="btn-open">open</button>
+              </td>
+            </tr>
+            <!-- Row 2 -->
+            <tr>
+              <td>Unread</td>
+              <td>Trainer assigned: Python Basics<br><span style="color:var(--text-2); font-size:13px;">You are assigned to the session on 12 Nov 2026.</span></td>
+              <td>23 Oct 2026<br><span style="color:var(--text-muted); font-size:12px;">08:00</span></td>
+              <td style="display:flex; gap:8px;">
+                <button class="btn-mark-read">Mark as read</button>
+                <button class="btn-open">open</button>
+              </td>
+            </tr>
+            <!-- Row 3 -->
+            <tr>
+              <td>Read</td>
+              <td>Completion inputs missing<br><span style="color:var(--text-2); font-size:13px;">Review attendance and assessments for your assigned session.</span></td>
+              <td>22 Oct 2026<br><span style="color:var(--text-muted); font-size:12px;">15:45</span></td>
+              <td>
+                <button class="btn-open">open</button>
+              </td>
+            </tr>
+            <!-- Row 4 -->
+            <tr>
+              <td>Read</td>
+              <td>Session changed: Python Basics<br><span style="color:var(--text-2); font-size:13px;">Review the updated schedule.</span></td>
+              <td>21 Oct 2026<br><span style="color:var(--text-muted); font-size:12px;">11:20</span></td>
+              <td>
+                <button class="btn-open">open</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Bottom Panels -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        
+        <!-- Panel 1: Selected Message -->
+        <div class="notif-panel">
+          <div class="notif-panel-header">Open notification — selected message</div>
+          <div class="notif-panel-body">
+            <h3 style="font: 600 18px Inter; color: var(--text); margin-bottom: 8px;">Session reminder: Data Privacy Basics</h3>
+            <p style="font: 400 13px Inter; color: var(--text-2); margin-bottom: 16px;">23 Oct 2026, 09:30 • Unread</p>
+            <p style="font: 400 15px/1.5 Inter; color: var(--text); margin-bottom: 20px;">Your assigned session is approaching. Review the participant list and attendance dates.</p>
+            <button class="btn-mark-read">Mark as read</button>
+          </div>
+        </div>
+
+        <!-- Panel 2: Empty State -->
+        <div class="notif-panel" style="border: 1px dashed var(--border);">
+          <div class="notif-panel-header" style="background: var(--surface-subtle); color: var(--text);">Alternate state — no notifications</div>
+          <div class="notif-panel-body" style="display:flex; flex-direction:column; justify-content:center; text-align:left;">
+            <h3 style="font: 600 20px Inter; color: var(--text); margin-bottom: 8px;">No notifications</h3>
+            <p style="font: 400 15px/1.5 Inter; color: var(--text-2);">Your inbox is empty. New training updates and reminders will appear here.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="js/trainer-shared.js"></script>
+<script>
+  // Initialize the sidebar for Trainer
+  TrainerUI.init('Notification');
+</script>
+</body>
+</html>
